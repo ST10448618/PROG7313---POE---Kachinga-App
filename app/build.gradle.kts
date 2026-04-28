@@ -1,20 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
 }
 
 android {
-    namespace = "com.example.kachingaapp_prog7313poe"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    namespace = "com.example.prog7313_poe_kachinga"
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.kachingaapp_prog7313poe"
-        minSdk = 24
+        applicationId = "com.example.prog7313_poe_kachinga"
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -34,6 +31,9 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
