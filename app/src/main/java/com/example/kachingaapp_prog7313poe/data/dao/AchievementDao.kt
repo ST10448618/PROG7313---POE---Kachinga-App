@@ -8,7 +8,6 @@ import androidx.room.Update
 import com.example.kachingaapp_prog7313poe.data.entity.Achievement
 import kotlinx.coroutines.flow.Flow
 
-
 @Dao
 interface AchievementDao {
 
