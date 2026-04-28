@@ -34,4 +34,51 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val _isEditingFinancial = MutableStateFlow(false)
     val isEditingFinancial: StateFlow<Boolean> = _isEditingFinancial.asStateFlow()
 
+    init { loadProfile() }
+
+    fun loadProfile() {
+        viewModelScope.launch {
+            combine(
+                session.userId,
+                session.userName,
+                session.userEmail,
+                session.monthlyIncome,
+                session.savingsTargetPct,
+                session.currency,
+                session.minMonthlyGoal,
+                session.maxMonthlyGoal
+            ) { args ->
+                val userId = args[0] as Int
+                val name = args[1] as String
+                val email = args[2] as String
+                val income = args[3] as Double
+                val savingsPct = args[4] as Double
+                val currency = args[5] as String
+                val minGoal = args[6] as Double
+                val maxGoal = args[7] as Double
+
+                var fullName = name
+                var userEmail = email
+
+                if (userId > 0) {
+                    val user = userDao.getUserById(userId).first()
+                    fullName = user?.fullName ?: name
+                    userEmail = user?.email ?: email
+                }
+
+                ProfileState(
+                    fullName = fullName,
+                    email = userEmail,
+                    monthlySalary = income,
+                    savingsTargetPct = savingsPct,
+                    currency = currency,
+                    minMonthlyGoal = minGoal,
+                    maxMonthlyGoal = maxGoal
+                )
+            }.collect { state ->
+                _profileState.value = state
+            }
+        }
+    }
+
 }
