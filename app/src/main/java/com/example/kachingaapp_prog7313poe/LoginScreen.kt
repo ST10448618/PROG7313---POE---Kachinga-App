@@ -123,3 +123,136 @@ fun LoginScreen(
                 errorContainerColor = Color(0xFFFFF0F0)
             )
         )
+// Password
+        Text(
+            text = "Password",
+            fontSize = 13.sp,
+            color = TextSecondary,
+            modifier = Modifier.padding(bottom = 6.dp)
+        )
+        OutlinedTextField(
+            value = password,
+            onValueChange = {
+                password = it
+                if (uiState.error != null) authViewModel.clearError()
+            },
+            placeholder = { Text("••••••••", color = TextHint) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+            shape = RoundedCornerShape(10.dp),
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                    authViewModel.login(email.trim(), password.trim())
+                }
+            ),
+            singleLine = true,
+            isError = uiState.error != null,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = KachingaGreen,
+                unfocusedBorderColor = Divider,
+                errorBorderColor = KachingaRed,
+                focusedContainerColor = Color(0xFFF7F7F7),
+                unfocusedContainerColor = Color(0xFFF7F7F7),
+                errorContainerColor = Color(0xFFFFF0F0)
+            )
+        )
+
+        Text(
+            text = "Forgot Password?",
+            fontSize = 13.sp,
+            color = KachingaGreen,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
+            textAlign = TextAlign.End
+        )
+
+        // Error card
+        if (uiState.error != null) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                shape = RoundedCornerShape(10.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFFFFF0F0)
+                )
+            ) {
+                Text(
+                    text = uiState.error ?: "",
+                    color = KachingaRed,
+                    fontSize = 13.sp,
+                    modifier = Modifier.padding(12.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        // Login button — no lambda passed to ViewModel
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(
+                    if (uiState.isLoading) KachingaGreen.copy(alpha = 0.6f)
+                    else KachingaGreen
+                )
+                .clickable(enabled = !uiState.isLoading) {
+                    focusManager.clearFocus()
+                    authViewModel.login(email.trim(), password.trim())
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            if (uiState.isLoading) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier.size(24.dp),
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text(
+                    text = "Log In",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 32.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "👆", fontSize = 18.sp)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "Use Fingerprint to Access",
+                fontSize = 13.sp,
+                color = KachingaGreen
+            )
+        }
+
+        Text(
+            text = "Don't have an account? Sign Up",
+            fontSize = 14.sp,
+            color = TextSecondary,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onSignUpClick() },
+            textAlign = TextAlign.Center
+        )
+    }
+}
