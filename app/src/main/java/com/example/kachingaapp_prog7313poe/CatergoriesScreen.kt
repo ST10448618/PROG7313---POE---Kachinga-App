@@ -1,6 +1,7 @@
 package com.example.prog7313_poe_kachinga
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,10 +22,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.filled.PieChart
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -37,23 +37,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.prog7313_poe_kachinga.data.entity.SavingsGoal
 import com.example.prog7313_poe_kachinga.navigation.NavRoutes
 import com.example.prog7313_poe_kachinga.ui.theme.BounceIn
 import com.example.prog7313_poe_kachinga.ui.theme.KachingaGreen
 import com.example.prog7313_poe_kachinga.ui.theme.KachingaGreenLight
 import com.example.prog7313_poe_kachinga.ui.theme.TextPrimary
 import com.example.prog7313_poe_kachinga.ui.theme.TextSecondary
-import com.example.prog7313_poe_kachinga.viewmodel.SavingsViewModel
+import com.example.prog7313_poe_kachinga.viewmodel.CategoryViewModel
 
 @Composable
-fun SavingsScreen(
+fun CategoriesScreen(
     onBackClick: () -> Unit,
-    onGoalClick: (SavingsGoal) -> Unit,
-    savingsViewModel: SavingsViewModel,
+    categoryViewModel: CategoryViewModel,
     onNavigate: (String) -> Unit
 ) {
-    val goals by savingsViewModel.allGoals.collectAsState()
+    val categories by categoryViewModel.allCategories.collectAsState()
 
     AnimatedScreen {
         Box(
@@ -92,7 +90,7 @@ fun SavingsScreen(
                                     .padding(10.dp)
                             )
                             Text(
-                                "Goals",
+                                "Categories",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White,
@@ -108,7 +106,7 @@ fun SavingsScreen(
                             ) {
                                 Icon(
                                     Icons.Filled.Notifications,
-                                    contentDescription = null,
+                                    contentDescription = "Notifications",
                                     tint = Color.White,
                                     modifier = Modifier.size(18.dp)
                                 )
@@ -120,12 +118,9 @@ fun SavingsScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             listOf(
-                                Pair("Total Goals", "${goals.size}"),
-                                Pair("Completed", "${goals.count {
-                                    it.targetAmount > 0 &&
-                                            it.savedAmount >= it.targetAmount }}"),
-                                Pair("In Progress", "${goals.count {
-                                    it.savedAmount < it.targetAmount }}")
+                                Pair("Total Balance", "R 7,783.00"),
+                                Pair("Income", "R 7,783.00"),
+                                Pair("Expense", "-R 1,187.40")
                             ).forEach { (label, value) ->
                                 Column {
                                     Text(
@@ -135,7 +130,7 @@ fun SavingsScreen(
                                     )
                                     Text(
                                         value,
-                                        fontSize = 18.sp,
+                                        fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = Color.White
                                     )
@@ -144,56 +139,71 @@ fun SavingsScreen(
                         }
                     }
                 }
+
+                // Categories grid
                 Column(
-                    modifier = Modifier.padding(20.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp)
                 ) {
-                    if (goals.isEmpty()) {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White)
+                    if (categories.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color.White)
+                                .padding(40.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Column(
+                            Text(
+                                "No categories yet. Tap Add New!",
+                                fontSize = 14.sp,
+                                color = TextSecondary,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    } else {
+                        categories.chunked(3).forEach { rowItems ->
+                            Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(40.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                    .padding(bottom = 16.dp),
+                                horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
-                                Text("💰", fontSize = 48.sp)
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Text(
-                                    "No savings goals yet",
-                                    fontSize = 15.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = TextPrimary
-                                )
-                                Text(
-                                    "Create your first goal below",
-                                    fontSize = 13.sp,
-                                    color = TextSecondary
-                                )
+                                rowItems.forEach { category ->
+                                    BounceIn {
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            modifier = Modifier.width(90.dp)
+                                        ) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(64.dp)
+                                                    .clip(RoundedCornerShape(14.dp))
+                                                    .background(KachingaGreenLight),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Text(category.icon, fontSize = 26.sp)
+                                            }
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                            Text(
+                                                category.name,
+                                                fontSize = 12.sp,
+                                                color = TextPrimary,
+                                                textAlign = TextAlign.Center
+                                            )
+                                        }
+                                    }
+                                }
+                                // Fill empty slots
+                                repeat(3 - rowItems.size) {
+                                    Spacer(modifier = Modifier.width(90.dp))
+                                }
                             }
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
-                    } else {
-                        goals.forEachIndexed { index, goal ->
-                            BounceIn(delay = index * 80) {
-                                SavingsGoalCard(
-                                    icon = goal.icon,
-                                    name = goal.name,
-                                    dates = "Target: R ${"%.2f".format(goal.targetAmount)}",
-                                    saved = "R ${"%.2f".format(goal.savedAmount)}",
-                                    target = "of R ${"%.2f".format(goal.targetAmount)}",
-                                    progress = if (goal.targetAmount > 0)
-                                        (goal.savedAmount / goal.targetAmount)
-                                            .toFloat().coerceIn(0f, 1f)
-                                    else 0f,
-                                    onClick = { onGoalClick(goal) }
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(16.dp))
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     Box(
                         modifier = Modifier
@@ -201,7 +211,7 @@ fun SavingsScreen(
                             .height(52.dp)
                             .clip(RoundedCornerShape(12.dp))
                             .background(KachingaGreen)
-                            .clickable { onNavigate(NavRoutes.ADD_SAVINGS_GOAL) },
+                            .clickable { onNavigate(NavRoutes.ADD_CATEGORY) },
                         contentAlignment = Alignment.Center
                     ) {
                         Row(
@@ -215,11 +225,33 @@ fun SavingsScreen(
                                 modifier = Modifier.size(18.dp)
                             )
                             Text(
-                                "Add Savings Goal",
+                                "Add New Category",
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
                             )
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(Color.White)
+                                .border(2.dp, KachingaGreen, RoundedCornerShape(12.dp))
+                                .clickable { onNavigate(NavRoutes.CATEGORY_REPORT) }
+                                .padding(bottom = 12.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Icon(Icons.Filled.PieChart, contentDescription = null,
+                                    tint = KachingaGreen, modifier = Modifier.size(18.dp))
+                                Text("View Spending Report", fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold, color = KachingaGreen)
+                            }
                         }
                     }
                 }
@@ -227,7 +259,7 @@ fun SavingsScreen(
 
             BottomNavBar(
                 modifier = Modifier.align(Alignment.BottomCenter),
-                selectedIndex = 3,
+                selectedIndex = 0,
                 onNavigate = onNavigate
             )
         }
@@ -235,76 +267,6 @@ fun SavingsScreen(
 }
 
 @Composable
-fun SavingsGoalCard(
-    icon: String,
-    name: String,
-    dates: String,
-    saved: String,
-    target: String,
-    progress: Float,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(2.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(KachingaGreenLight),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(icon, fontSize = 22.sp)
-                }
-                Spacer(modifier = Modifier.width(12.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        name,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = TextPrimary
-                    )
-                    Text(dates, fontSize = 12.sp, color = TextSecondary)
-                }
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(
-                        saved,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = TextPrimary
-                    )
-                    Text(target, fontSize = 12.sp, color = TextSecondary)
-                }
-            }
-
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(8.dp)
-                    .clip(RoundedCornerShape(4.dp)),
-                color = KachingaGreen,
-                trackColor = Color(0xFFE0E0E0)
-            )
-
-            Text(
-                "${(progress * 100).toInt()}% saved",
-                fontSize = 11.sp,
-                color = KachingaGreen,
-                modifier = Modifier.padding(top = 6.dp)
-            )
-        }
-    }
+fun AnimatedScreen(content: @Composable () -> Unit) {
+    content()
 }
