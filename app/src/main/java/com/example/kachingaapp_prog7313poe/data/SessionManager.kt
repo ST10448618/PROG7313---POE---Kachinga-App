@@ -108,19 +108,18 @@ class SessionManager(private val context: Context) {
     ) {
         try {
             context.dataStore.edit { prefs ->
-                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MONTHLY_INCOME] =
-                    income
-                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.SAVINGS_TARGET_PCT] =
-                    savingsPct
-                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.CURRENCY] =
-                    currency
-                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MIN_MONTHLY_GOAL] =
-                    minGoal
-                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MAX_MONTHLY_GOAL] =
-                    maxGoal
+                prefs[MONTHLY_INCOME] = income
+                prefs[SAVINGS_TARGET_PCT] = savingsPct
+                prefs[CURRENCY] = currency
+                prefs[MIN_MONTHLY_GOAL] = minGoal
+                prefs[MAX_MONTHLY_GOAL] = maxGoal
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        } catch (e: Exception) { e.printStackTrace() }
+    }
+
+    suspend fun clearSession() {
+        try {
+            context.dataStore.edit { it.clear() }
+        } catch (e: Exception) { e.printStackTrace() }
     }
 }
