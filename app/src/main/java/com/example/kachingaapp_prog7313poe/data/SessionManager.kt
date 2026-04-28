@@ -12,6 +12,7 @@ private val Context.dataStore by preferencesDataStore(name = "kachinga_session")
 
 class SessionManager(private val context: Context) {
 
+    //Values Added
     companion object {
         val USER_ID = intPreferencesKey("user_id")
         val USER_NAME = stringPreferencesKey("user_name")
@@ -27,71 +28,72 @@ class SessionManager(private val context: Context) {
     val isLoggedIn: Flow<Boolean> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
         .map {
-            it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.IS_LOGGED_IN]
+            it[IS_LOGGED_IN]
                 ?: false
         }
 
     val userId: Flow<Int> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
-        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.USER_ID] ?: -1 }
+        .map { it[USER_ID] ?: -1 }
 
     val userName: Flow<String> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
         .map {
-            it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.USER_NAME] ?: ""
+            it[USER_NAME] ?: ""
         }
 
     val userEmail: Flow<String> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
         .map {
-            it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.USER_EMAIL] ?: ""
+            it[USER_EMAIL] ?: ""
         }
 
     val monthlyIncome: Flow<Double> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
         .map {
-            it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MONTHLY_INCOME]
+            it[MONTHLY_INCOME]
                 ?: 0.0
         }
 
     val savingsTargetPct: Flow<Double> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
         .map {
-            it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.SAVINGS_TARGET_PCT]
+            it[SAVINGS_TARGET_PCT]
                 ?: 20.0
         }
 
     val currency: Flow<String> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
         .map {
-            it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.CURRENCY]
+            it[CURRENCY]
                 ?: "ZAR (R)"
         }
 
     val minMonthlyGoal: Flow<Double> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
         .map {
-            it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MIN_MONTHLY_GOAL]
+            it[MIN_MONTHLY_GOAL]
                 ?: 0.0
         }
 
     val maxMonthlyGoal: Flow<Double> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
         .map {
-            it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MAX_MONTHLY_GOAL]
+            it[MAX_MONTHLY_GOAL]
                 ?: 0.0
         }
 
+    //Save the Session
     suspend fun saveSession(userId: Int, userName: String, userEmail: String) {
         try {
             context.dataStore.edit { prefs ->
-                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.USER_ID] =
+                prefs[USER_ID] =
                     userId
-                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.USER_NAME] =
+                prefs[USER_NAME] =
                     userName
-                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.USER_EMAIL] =
+                prefs[USER_EMAIL] =
                     userEmail
-                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.IS_LOGGED_IN] =
+                prefs[IS_LOGGED_IN] =
                     true
             }
         } catch (e: Exception) {
@@ -99,6 +101,7 @@ class SessionManager(private val context: Context) {
         }
     }
 
+    //Save Financial Settings
     suspend fun saveFinancialSettings(
         income: Double,
         savingsPct: Double,
@@ -117,6 +120,7 @@ class SessionManager(private val context: Context) {
         } catch (e: Exception) { e.printStackTrace() }
     }
 
+    //Clear the Session
     suspend fun clearSession() {
         try {
             context.dataStore.edit { it.clear() }
