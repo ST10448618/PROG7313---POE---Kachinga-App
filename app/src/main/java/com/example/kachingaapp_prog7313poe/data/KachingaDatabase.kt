@@ -27,4 +27,33 @@ abstract class KachingaDatabase : RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
     abstract fun savingsGoalDao(): SavingsGoalDao
     abstract fun achievementDao(): AchievementDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: com.example.prog7313_poe_kachinga.data.KachingaDatabase? = null
+
+        fun getDatabase(context: Context): com.example.prog7313_poe_kachinga.data.KachingaDatabase {
+            return INSTANCE ?: synchronized(this) {
+                Room.databaseBuilder(
+                    context.applicationContext,
+                    com.example.prog7313_poe_kachinga.data.KachingaDatabase::class.java,
+                    "kachinga_database"
+                )
+                    .fallbackToDestructiveMigration()
+                    .addCallback(object : Callback() {
+                        override fun onCreate(db: SupportSQLiteDatabase) {
+                            super.onCreate(db)
+                            CoroutineScope(Dispatchers.IO).launch {
+                                INSTANCE?.let {
+                                    seedCategories(it.categoryDao())
+                                    seedAchievements(it.achievementDao())
+                                }
+                            }
+                        }
+                    })
+                    .build()
+                    .also { INSTANCE = it }
+            }
+        }
+    }
 }
