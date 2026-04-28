@@ -90,3 +90,24 @@ fun TransactionsScreen(
             }
         }
     }
+// Delete confirm dialog
+    showDeleteDialog?.let { tx ->
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = null },
+            title = { Text("Delete Transaction") },
+            text = { Text("Remove \"${tx.title}\" permanently?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    transactionViewModel.deleteTransaction(tx)
+                    showDeleteDialog = null
+                }) {
+                    Text("Delete", color = KachingaRed, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = null }) {
+                    Text("Cancel", color = TextSecondary)
+                }
+            }
+        )
+    }
