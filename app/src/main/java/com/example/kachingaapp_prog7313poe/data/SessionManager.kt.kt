@@ -26,7 +26,10 @@ class SessionManager(private val context: Context) {
 
     val isLoggedIn: Flow<Boolean> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
-        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.IS_LOGGED_IN] ?: false }
+        .map {
+            it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.IS_LOGGED_IN]
+                ?: false
+        }
 
     val userId: Flow<Int> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
@@ -34,29 +37,90 @@ class SessionManager(private val context: Context) {
 
     val userName: Flow<String> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
-        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.USER_NAME] ?: "" }
+        .map {
+            it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.USER_NAME] ?: ""
+        }
 
     val userEmail: Flow<String> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
-        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.USER_EMAIL] ?: "" }
+        .map {
+            it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.USER_EMAIL] ?: ""
+        }
 
     val monthlyIncome: Flow<Double> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
-        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MONTHLY_INCOME] ?: 0.0 }
+        .map {
+            it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MONTHLY_INCOME]
+                ?: 0.0
+        }
 
     val savingsTargetPct: Flow<Double> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
-        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.SAVINGS_TARGET_PCT] ?: 20.0 }
+        .map {
+            it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.SAVINGS_TARGET_PCT]
+                ?: 20.0
+        }
 
     val currency: Flow<String> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
-        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.CURRENCY] ?: "ZAR (R)" }
+        .map {
+            it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.CURRENCY]
+                ?: "ZAR (R)"
+        }
 
     val minMonthlyGoal: Flow<Double> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
-        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MIN_MONTHLY_GOAL] ?: 0.0 }
+        .map {
+            it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MIN_MONTHLY_GOAL]
+                ?: 0.0
+        }
 
     val maxMonthlyGoal: Flow<Double> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
-        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MAX_MONTHLY_GOAL] ?: 0.0 }
+        .map {
+            it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MAX_MONTHLY_GOAL]
+                ?: 0.0
+        }
+
+    suspend fun saveSession(userId: Int, userName: String, userEmail: String) {
+        try {
+            context.dataStore.edit { prefs ->
+                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.USER_ID] =
+                    userId
+                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.USER_NAME] =
+                    userName
+                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.USER_EMAIL] =
+                    userEmail
+                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.IS_LOGGED_IN] =
+                    true
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    suspend fun saveFinancialSettings(
+        income: Double,
+        savingsPct: Double,
+        currency: String,
+        minGoal: Double,
+        maxGoal: Double
+    ) {
+        try {
+            context.dataStore.edit { prefs ->
+                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MONTHLY_INCOME] =
+                    income
+                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.SAVINGS_TARGET_PCT] =
+                    savingsPct
+                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.CURRENCY] =
+                    currency
+                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MIN_MONTHLY_GOAL] =
+                    minGoal
+                prefs[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MAX_MONTHLY_GOAL] =
+                    maxGoal
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }
