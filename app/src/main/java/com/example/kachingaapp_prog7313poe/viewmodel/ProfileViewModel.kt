@@ -81,4 +81,48 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun toggleEditingPersonal() { _isEditingPersonal.update { !it } }
+    fun toggleEditingFinancial() { _isEditingFinancial.update { !it } }
+
+    fun savePersonalInfo(fullName: String, email: String, phone: String) {
+        viewModelScope.launch {
+            val userId = session.userId.first()
+            if (userId > 0) {
+                val existing = userDao.getUserById(userId).first()
+                if (existing != null) {
+                    userDao.updateUser(
+                        existing.copy(fullName = fullName.trim(), email = email.trim())
+                    )
+                    session.saveSession(userId, fullName.trim(), email.trim())
+                }
+            }
+            _profileState.update { it.copy(fullName = fullName, email = email, phone = phone) }
+            _isEditingPersonal.update { false }
+        }
+    }
+
+    fun saveFinancialSettings(
+        salary: Double,
+        savingsPct: Double,
+        budget: Double,
+        currency: String,
+        minGoal: Double,
+        maxGoal: Double
+    ) {
+        viewModelScope.launch {
+            session.saveFinancialSettings(salary, savingsPct, currency, minGoal, maxGoal)
+            _profileState.update {
+                it.copy(
+                    monthlySalary = salary,
+                    savingsTargetPct = savingsPct,
+                    monthlyBudget = budget,
+                    currency = currency,
+                    minMonthlyGoal = minGoal,
+                    maxMonthlyGoal = maxGoal
+                )
+            }
+            _isEditingFinancial.update { false }
+        }
+    }
+
 }
