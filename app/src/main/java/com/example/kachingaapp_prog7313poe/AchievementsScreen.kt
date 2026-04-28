@@ -177,6 +177,7 @@ fun AchievementsScreen(
                         }
                     }
                 }
+
                 // Badges
                 Column(
                     modifier = Modifier
@@ -236,5 +237,89 @@ fun AchievementsScreen(
                 selectedIndex = 4
             )
         }
+    }
+}
+
+@Composable
+fun AchievementBadgeCard(
+    icon: String,
+    name: String,
+    description: String,
+    earned: Boolean
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.width(90.dp)
+    ) {
+        Box(
+            modifier = Modifier.size(68.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(
+                        if (earned) KachingaGreenLight else Color(0xFFF5F5F5)
+                    )
+                    .then(
+                        if (earned) Modifier.border(
+                            1.dp,
+                            KachingaGreen.copy(alpha = 0.3f),
+                            RoundedCornerShape(16.dp)
+                        ) else Modifier
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    icon,
+                    fontSize = 28.sp,
+                    color = if (earned) Color.Unspecified
+                    else Color.Gray.copy(alpha = 0.4f)
+                )
+            }
+
+            if (earned) {
+                Box(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clip(CircleShape)
+                        .background(KachingaGreen)
+                        .align(Alignment.TopEnd)
+                        .offset(x = 4.dp, y = (-4).dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("✓", fontSize = 10.sp, color = Color.White,
+                        fontWeight = FontWeight.Bold)
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFFCCCCCC))
+                        .align(Alignment.TopEnd)
+                        .offset(x = 4.dp, y = (-4).dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("🔒", fontSize = 9.sp)
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(6.dp))
+        Text(
+            name,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            color = if (earned) TextPrimary else TextSecondary,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            description,
+            fontSize = 10.sp,
+            color = TextSecondary,
+            textAlign = TextAlign.Center,
+            lineHeight = 13.sp
+        )
     }
 }
