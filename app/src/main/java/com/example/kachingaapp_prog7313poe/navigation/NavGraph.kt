@@ -155,3 +155,27 @@ fun NavGraph(navController: NavHostController) {
                 transactionViewModel = transactionViewModel
             )
         }
+        composable(NavRoutes.ACHIEVEMENTS) {
+            AchievementsScreen(
+                onBackClick = { navController.popBackStack() },
+                achievementsViewModel = achievementsViewModel
+            )
+        }
+
+        composable(NavRoutes.PROFILE) {
+            ProfileScreen(
+                onBackClick = { navController.popBackStack() },
+                authViewModel = authViewModel,
+                profileViewModel = profileViewModel,
+                onNavigate = { route -> navController.navigate(route) }
+            )
+        }
+
+        composable(NavRoutes.CATEGORY_REPORT) {
+            CategoryReportScreen(
+                onBackClick = { navController.popBackStack() },
+                transactionViewModel = transactionViewModel
+            )
+        }
+    }
+}
