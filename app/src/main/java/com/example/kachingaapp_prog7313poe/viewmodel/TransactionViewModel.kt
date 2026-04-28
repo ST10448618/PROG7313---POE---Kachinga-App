@@ -122,6 +122,14 @@ class TransactionViewModel(application: Application) : AndroidViewModel(applicat
             repo.getExpensesByDateRange(currentUserId, start, end)
         else flowOf(emptyList())
     }
+
+    fun deleteTransaction(transaction: AppTransaction) {
+        viewModelScope.launch(Dispatchers.IO) { repo.delete(transaction) }
+    }
+
+    fun clearMessages() {
+        _uiState.update { it.copy(error = null, successMessage = null) }
+    }
 }
 
 data class TransactionUiState(
