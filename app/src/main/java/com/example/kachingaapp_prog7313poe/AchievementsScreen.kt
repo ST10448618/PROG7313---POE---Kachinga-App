@@ -177,3 +177,64 @@ fun AchievementsScreen(
                         }
                     }
                 }
+                // Badges
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(Color.White)
+                        .padding(20.dp)
+                ) {
+                    Text(
+                        "Badges Earned",
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = TextPrimary,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
+                    if (achievements.isEmpty()) {
+                        Text(
+                            "Complete actions to earn badges!",
+                            fontSize = 13.sp,
+                            color = TextSecondary,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else {
+                        achievements.chunked(3).forEachIndexed { rowIndex, row ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 20.dp),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                row.forEachIndexed { colIndex, achievement ->
+                                    BounceIn(delay = (rowIndex * 3 + colIndex) * 80) {
+                                        AchievementBadgeCard(
+                                            icon = achievement.icon,
+                                            name = achievement.name,
+                                            description = achievement.description,
+                                            earned = achievement.isEarned
+                                        )
+                                    }
+                                }
+                                repeat(3 - row.size) {
+                                    Spacer(modifier = Modifier.width(90.dp))
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            BottomNavBar(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                selectedIndex = 4
+            )
+        }
+    }
+}
