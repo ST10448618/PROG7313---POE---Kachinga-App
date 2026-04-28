@@ -37,4 +37,20 @@ fun TransactionsScreen(
     onBackClick: () -> Unit,
     transactionViewModel: TransactionViewModel,
     onNavigate: ((String) -> Unit)? = null
-)
+){
+    val transactions by transactionViewModel.allTransactions.collectAsState()
+    val balance by transactionViewModel.balance.collectAsState()
+    val totalIncome by transactionViewModel.totalIncome.collectAsState()
+    val totalExpenses by transactionViewModel.totalExpenses.collectAsState()
+    val uiState by transactionViewModel.uiState.collectAsState()
+
+    var selectedFilter by remember { mutableStateOf("All") }
+    var showDeleteDialog by remember { mutableStateOf<AppTransaction?>(null) }
+    var viewingImage by remember { mutableStateOf<String?>(null) }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val filteredTransactions = when (selectedFilter) {
+        "Income" -> transactions.filter { !it.isExpense }
+        "Expense" -> transactions.filter { it.isExpense }
+        else -> transactions
+    }
