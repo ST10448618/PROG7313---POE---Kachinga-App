@@ -253,3 +253,34 @@ fun TransactionsScreen(
                         }
                     }
                 }
+                // Filter chips
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    listOf("All", "Income", "Expense").forEach { filter ->
+                        val isSelected = selectedFilter == filter
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(50.dp))
+                                .background(
+                                    when {
+                                        isSelected && filter == "Expense" -> KachingaRed
+                                        isSelected -> KachingaGreen
+                                        else -> Color.White
+                                    }
+                                )
+                                .clickable { selectedFilter = filter }
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                filter,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = if (isSelected) Color.White else TextSecondary
+                            )
+                        }
+                    }
+                }
