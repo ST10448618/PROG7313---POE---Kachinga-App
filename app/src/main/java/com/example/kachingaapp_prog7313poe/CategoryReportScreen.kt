@@ -161,6 +161,7 @@ fun CategoryReportScreen(
             }
         }
     }
+
     AnimatedScreen {
         Box(
             modifier = Modifier
@@ -431,3 +432,45 @@ fun CategoryReportScreen(
                                                 }
 
                                                 Spacer(modifier = Modifier.height(6.dp))
+
+                                                // Progress bar
+                                                Box(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .height(6.dp)
+                                                        .clip(RoundedCornerShape(3.dp))
+                                                        .background(Color(0xFFE0E0E0))
+                                                ) {
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .fillMaxWidth(cat.percentage / 100f)
+                                                            .height(6.dp)
+                                                            .clip(RoundedCornerShape(3.dp))
+                                                            .background(KachingaRed)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if (index < categoryTotals.lastIndex) {
+                                        HorizontalDivider(
+                                            color = Divider,
+                                            thickness = 0.5.dp
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            BottomNavBar(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                selectedIndex = 1,
+                onNavigate = { onBackClick() }
+            )
+        }
+    }
+}
