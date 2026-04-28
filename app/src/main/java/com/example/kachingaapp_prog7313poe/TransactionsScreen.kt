@@ -54,3 +54,11 @@ fun TransactionsScreen(
         "Expense" -> transactions.filter { it.isExpense }
         else -> transactions
     }
+    val grouped = filteredTransactions.groupBy { monthLabel(it.date) }
+
+    LaunchedEffect(uiState.successMessage) {
+        uiState.successMessage?.let {
+            snackbarHostState.showSnackbar(it)
+            transactionViewModel.clearMessages()
+        }
+    }
