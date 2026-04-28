@@ -23,6 +23,28 @@ class CategoryViewModel(application: Application) : AndroidViewModel(application
     private val userId: StateFlow<Int> = session.userId
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), -1)
 
+    //Default categories and the user's own categories are shown
+    val allCategories: StateFlow<List<Category>> = userId
+        .flatMapLatest { id ->
+            if (id >= 0) repo.getAll(id)
+            else flowOf(emptyList())
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val expenseCategories: StateFlow<List<Category>> = userId
+        .flatMapLatest { id ->
+            if (id >= 0) repo.getExpenseCategories(id)
+            else flowOf(emptyList())
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val incomeCategories: StateFlow<List<Category>> = userId
+        .flatMapLatest { id ->
+            if (id >= 0) repo.getIncomeCategories(id)
+            else flowOf(emptyList())
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
 
 
 
