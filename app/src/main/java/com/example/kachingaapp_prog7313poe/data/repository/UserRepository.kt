@@ -57,4 +57,12 @@ class UserRepository(private val dao: UserDao) {
 
     suspend fun updateUser(user: User) = dao.updateUser(user)
 
+    suspend fun getUserByEmail(email: String): User? {
+        return try {
+            dao.getUserByEmail(email.trim())
+                ?: dao.getUserByEmail(email.trim().lowercase())
+        } catch (e: Exception) {
+            null
+        }
+    }
 }
