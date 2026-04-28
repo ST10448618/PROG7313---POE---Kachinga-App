@@ -142,3 +142,13 @@ fun TransactionsScreen(
                             .padding(bottom = 20.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        // Back button
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .size(44.dp)
+                                .clickable { onBackClick() }
+                                .padding(10.dp)
+                        )
