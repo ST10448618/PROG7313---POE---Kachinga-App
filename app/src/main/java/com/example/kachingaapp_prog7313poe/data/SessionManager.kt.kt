@@ -23,4 +23,40 @@ class SessionManager(private val context: Context) {
         val MIN_MONTHLY_GOAL = doublePreferencesKey("min_monthly_goal")
         val MAX_MONTHLY_GOAL = doublePreferencesKey("max_monthly_goal")
     }
+
+    val isLoggedIn: Flow<Boolean> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.IS_LOGGED_IN] ?: false }
+
+    val userId: Flow<Int> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.USER_ID] ?: -1 }
+
+    val userName: Flow<String> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.USER_NAME] ?: "" }
+
+    val userEmail: Flow<String> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.USER_EMAIL] ?: "" }
+
+    val monthlyIncome: Flow<Double> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MONTHLY_INCOME] ?: 0.0 }
+
+    val savingsTargetPct: Flow<Double> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.SAVINGS_TARGET_PCT] ?: 20.0 }
+
+    val currency: Flow<String> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.CURRENCY] ?: "ZAR (R)" }
+
+    val minMonthlyGoal: Flow<Double> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MIN_MONTHLY_GOAL] ?: 0.0 }
+
+    val maxMonthlyGoal: Flow<Double> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { it[com.example.kachingaapp_prog7313poe.data.SessionManager.Companion.MAX_MONTHLY_GOAL] ?: 0.0 }
 }
