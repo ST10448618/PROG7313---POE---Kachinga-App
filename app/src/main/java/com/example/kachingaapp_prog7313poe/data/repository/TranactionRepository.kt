@@ -17,5 +17,10 @@ class TransactionRepository(private val dao: TransactionDao) {
     fun getByCategory(userId: Int, categoryId: Int): Flow<List<AppTransaction>> =
         dao.getTransactionsByCategory(userId, categoryId)
 
+    fun getByDateRange(userId: Int, start: Long, end: Long): Flow<List<AppTransaction>> =
+        dao.getTransactionsByDateRange(userId, start, end)
+
+    fun getExpensesByDateRange(userId: Int, start: Long, end: Long): Flow<List<AppTransaction>> =
+        dao.getExpensesByDateRange(userId, start, end)
 
 }
