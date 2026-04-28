@@ -24,4 +24,8 @@ class CategoryRepository(private val dao: CategoryDao) {
             Result.failure(e)
         }
     }
+    suspend fun delete(category: Category) = dao.deleteCategory(category)
+
+    suspend fun update(category: Category) = dao.updateCategory(category)
+
 }
