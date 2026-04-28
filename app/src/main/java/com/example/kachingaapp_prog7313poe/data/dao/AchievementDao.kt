@@ -1,5 +1,6 @@
 package com.example.kachingaapp_prog7313poe.data.dao
 
+
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
