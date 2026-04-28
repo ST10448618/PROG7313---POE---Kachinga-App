@@ -410,3 +410,193 @@ fun CalendarScreen(
                                         startAngle += 180f * segment.fraction
                                     }
                                 }
+                                // Labels on arc
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 32.dp),
+                                    horizontalArrangement = Arrangement.SpaceEvenly
+                                ) {
+                                    chartData.take(3).forEach { segment ->
+                                        Text(
+                                            "${(segment.fraction * 100).toInt()}%",
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color.White
+                                        )
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            // Dynamic legend
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                chartData.forEach { segment ->
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 4.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(10.dp)
+                                                .clip(CircleShape)
+                                                .background(segment.color)
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            segment.label,
+                                            fontSize = 13.sp,
+                                            color = TextPrimary,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                        Text(
+                                            "${"%.2f".format(segment.amount)}",
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = TextPrimary
+                                        )
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+
+                        // Transaction list for selected day
+                        Text(
+                            "Transactions",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = TextPrimary,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        selectedDayTransactions.forEach { tx ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(
+                                            if (tx.isExpense) KachingaRedLight
+                                            else KachingaGreenLight
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(tx.categoryIcon, fontSize = 18.sp)
+                                }
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        tx.title, fontSize = 14.sp,
+                                        fontWeight = FontWeight.Bold, color = TextPrimary
+                                    )
+                                    Text(
+                                        tx.categoryName, fontSize = 12.sp,
+                                        color = TextSecondary
+                                    )
+                                }
+                                Text(
+                                    "${if (tx.isExpense) "-" else "+"}${"%.2f".format(tx.amount)}",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (tx.isExpense) KachingaRed else KachingaGreen
+                                )
+                            }
+                            HorizontalDivider(color = Divider, thickness = 0.5.dp)
+                        }
+                    }
+                }
+            }
+
+            BottomNavBar(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                selectedIndex = 1,
+                onNavigate = { onBackClick() }
+            )
+        }
+    }
+}
+
+// Data class for chart segments
+data class ChartSegment(
+    val label: String,
+    val amount: Double,
+    val fraction: Float,
+    val color: Color
+)
+
+// Chart colour palette
+private val chartColors = listOf(
+    Color(0xFF1DB954),
+    Color(0xFF0F6E56),
+    Color(0xFF5DCAA5),
+    Color(0xFFFF9800),
+    Color(0xFFE91E63),
+    Color(0xFF3F51B5),
+    Color(0xFF9C27B0),
+    Color(0xFFFF5722)
+)
+
+fun buildChartData(transactions: List<AppTransaction>): List<ChartSegment> {
+    val expenses = transactions.filter { it.isExpense }
+    if (expenses.isEmpty()) return emptyList()
+
+    val total = expenses.sumOf { it.amount }
+    if (total <= 0) return emptyList()
+
+    // Group by category
+    val grouped = expenses
+        .groupBy { it.categoryName }
+        .map { (name, txs) -> name to txs.sumOf { it.amount } }
+        .sortedByDescending { it.second }
+
+    return grouped.mapIndexed { index, (name, amount) ->
+        ChartSegment(
+            label = name,
+            amount = amount,
+            fraction = (amount / total).toFloat(),
+            color = chartColors[index % chartColors.size]
+        )
+    }
+}
+
+fun buildCalendarWeeks(year: Int, month: Int): List<List<Int>> {
+    val cal = Calendar.getInstance()
+    cal.set(year, month, 1)
+
+    val firstDayOfWeek = when (cal.get(Calendar.DAY_OF_WEEK)) {
+        Calendar.MONDAY -> 0
+        Calendar.TUESDAY -> 1
+        Calendar.WEDNESDAY -> 2
+        Calendar.THURSDAY -> 3
+        Calendar.FRIDAY -> 4
+        Calendar.SATURDAY -> 5
+        Calendar.SUNDAY -> 6
+        else -> 0
+    }
+
+    val daysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+    val days = mutableListOf<Int>()
+    repeat(firstDayOfWeek) { days.add(0) }
+    for (d in 1..daysInMonth) days.add(d)
+    while (days.size % 7 != 0) days.add(0)
+    return days.chunked(7)
+}
+
+@Composable
+fun LegendDot(color: Color) {
+    Box(
+        modifier = Modifier
+            .size(10.dp)
+            .clip(CircleShape)
+            .background(color)
+    )
+}
