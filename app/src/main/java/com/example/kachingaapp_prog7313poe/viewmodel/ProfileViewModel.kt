@@ -22,4 +22,16 @@ data class ProfileState(
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val userDao = KachingaDatabase.getDatabase(application).userDao()
+    private val session = SessionManager(application)
+
+    private val _profileState = MutableStateFlow(ProfileState())
+    val profileState: StateFlow<ProfileState> = _profileState.asStateFlow()
+
+    private val _isEditingPersonal = MutableStateFlow(false)
+    val isEditingPersonal: StateFlow<Boolean> = _isEditingPersonal.asStateFlow()
+
+    private val _isEditingFinancial = MutableStateFlow(false)
+    val isEditingFinancial: StateFlow<Boolean> = _isEditingFinancial.asStateFlow()
+
 }
