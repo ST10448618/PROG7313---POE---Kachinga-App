@@ -75,5 +75,25 @@ abstract class KachingaDatabase : RoomDatabase() {
                 Category(userId = 0, name = "Other Income",  icon = "💰", isExpense = false)
             ).forEach { dao.insertCategory(it) }
         }
+
+        private suspend fun seedAchievements(dao: AchievementDao) {
+            listOf(
+                Achievement(name = "First Saver",       description = "Added your first transaction",        icon = "🐷", xpReward = 100),
+                Achievement(name = "7 Day Streak",      description = "Logged expenses for 7 days",          icon = "🔥", xpReward = 150),
+                Achievement(name = "Goal Crusher",      description = "Completed first savings goal",        icon = "🎯", xpReward = 200),
+                Achievement(name = "Big Spender",       description = "Saved R2000 total",                   icon = "⭐", xpReward = 300),
+                Achievement(name = "Champion",          description = "30 day streak",                       icon = "🏅", xpReward = 400),
+                Achievement(name = "Royalty",           description = "Reach level 10",                      icon = "👑", xpReward = 500),
+                Achievement(name = "Budget Master",     description = "Stayed under budget for a month",     icon = "📊", xpReward = 250),
+                Achievement(name = "Consistent Saver",  description = "Added income 5 times",                icon = "💎", xpReward = 200),
+                Achievement(name = "Category Creator",  description = "Created a custom category",           icon = "🗂", xpReward = 100),
+                Achievement(name = "Half Way There",    description = "Reached 50% of a savings goal",      icon = "🚀", xpReward = 150),
+                Achievement(name = "Receipt Keeper",    description = "Attached a receipt to a transaction", icon = "🧾", xpReward = 100),
+                Achievement(name = "High Earner",       description = "Logged income over R10,000",          icon = "💸", xpReward = 350),
+                Achievement(name = "Frugal Five",       description = "Added 5 expense transactions",        icon = "✂", xpReward = 150),
+                Achievement(name = "Multi Goal",        description = "Created 3 or more savings goals",     icon = "🎯", xpReward = 200),
+                Achievement(name = "Profile Pro",       description = "Set your salary and savings target",  icon = "👤", xpReward = 100)
+            ).forEach { dao.insertAchievement(it) }
+        }
     }
 }
