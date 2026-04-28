@@ -144,3 +144,167 @@ fun SavingsScreen(
                         }
                     }
                 }
+                Column(
+                    modifier = Modifier.padding(20.dp)
+                ) {
+                    if (goals.isEmpty()) {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(40.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text("💰", fontSize = 48.sp)
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Text(
+                                    "No savings goals yet",
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = TextPrimary
+                                )
+                                Text(
+                                    "Create your first goal below",
+                                    fontSize = 13.sp,
+                                    color = TextSecondary
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                    } else {
+                        goals.forEachIndexed { index, goal ->
+                            BounceIn(delay = index * 80) {
+                                SavingsGoalCard(
+                                    icon = goal.icon,
+                                    name = goal.name,
+                                    dates = "Target: R ${"%.2f".format(goal.targetAmount)}",
+                                    saved = "R ${"%.2f".format(goal.savedAmount)}",
+                                    target = "of R ${"%.2f".format(goal.targetAmount)}",
+                                    progress = if (goal.targetAmount > 0)
+                                        (goal.savedAmount / goal.targetAmount)
+                                            .toFloat().coerceIn(0f, 1f)
+                                    else 0f,
+                                    onClick = { onGoalClick(goal) }
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(KachingaGreen)
+                            .clickable { onNavigate(NavRoutes.ADD_SAVINGS_GOAL) },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                Icons.Filled.Add,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Text(
+                                "Add Savings Goal",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        }
+                    }
+                }
+            }
+
+            BottomNavBar(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                selectedIndex = 3,
+                onNavigate = onNavigate
+            )
+        }
+    }
+}
+
+@Composable
+fun SavingsGoalCard(
+    icon: String,
+    name: String,
+    dates: String,
+    saved: String,
+    target: String,
+    progress: Float,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(KachingaGreenLight),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(icon, fontSize = 22.sp)
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        name,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = TextPrimary
+                    )
+                    Text(dates, fontSize = 12.sp, color = TextSecondary)
+                }
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        saved,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = TextPrimary
+                    )
+                    Text(target, fontSize = 12.sp, color = TextSecondary)
+                }
+            }
+
+            LinearProgressIndicator(
+                progress = { progress },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(8.dp)
+                    .clip(RoundedCornerShape(4.dp)),
+                color = KachingaGreen,
+                trackColor = Color(0xFFE0E0E0)
+            )
+
+            Text(
+                "${(progress * 100).toInt()}% saved",
+                fontSize = 11.sp,
+                color = KachingaGreen,
+                modifier = Modifier.padding(top = 6.dp)
+            )
+        }
+    }
+}
