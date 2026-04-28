@@ -9,6 +9,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class KachingaDatabase {
+@Database(
+    entities = [
+        User::class,
+        AppTransaction::class,
+        Category::class,
+        SavingsGoal::class,
+        Achievement::class
+    ],
+    version = 4,
+    exportSchema = false
+)
+abstract class KachingaDatabase : RoomDatabase() {
 
+    abstract fun userDao(): UserDao
+    abstract fun transactionDao(): TransactionDao
+    abstract fun categoryDao(): CategoryDao
+    abstract fun savingsGoalDao(): SavingsGoalDao
+    abstract fun achievementDao(): AchievementDao
 }
