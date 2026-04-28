@@ -71,3 +71,87 @@ fun NavGraph(navController: NavHostController) {
                 authViewModel = authViewModel
             )
         }
+        composable(NavRoutes.HOME) {
+            HomeScreen(
+                transactionViewModel = transactionViewModel,
+                homeViewModel = homeViewModel,
+                onNavigate = { route -> navController.navigate(route) }
+            )
+        }
+
+        composable(NavRoutes.TRANSACTIONS) {
+            TransactionsScreen(
+                onBackClick = { navController.popBackStack() },
+                transactionViewModel = transactionViewModel,
+                onNavigate = { route -> navController.navigate(route) }
+            )
+        }
+
+        composable(NavRoutes.ADD_TRANSACTION) {
+            AddTransactionScreen(
+                onBackClick = { navController.popBackStack() },
+                transactionViewModel = transactionViewModel,
+                categoryViewModel = categoryViewModel,
+                onSuccess = {
+                    // Always go back to HOME after adding a transaction
+                    navController.navigate(NavRoutes.HOME) {
+                        popUpTo(NavRoutes.HOME) { inclusive = false }
+                    }
+                }
+            )
+        }
+
+        composable(NavRoutes.CATEGORIES) {
+            CategoriesScreen(
+                onBackClick = { navController.popBackStack() },
+                categoryViewModel = categoryViewModel,
+                onNavigate = { route -> navController.navigate(route) }
+            )
+        }
+
+        composable(NavRoutes.ADD_CATEGORY) {
+            AddCategoryScreen(
+                onBackClick = { navController.popBackStack() },
+                categoryViewModel = categoryViewModel,
+                onSuccess = { navController.popBackStack() }
+            )
+        }
+
+        composable(NavRoutes.SAVINGS) {
+            SavingsScreen(
+                onBackClick = { navController.popBackStack() },
+                onGoalClick = { goal ->
+                    navController.navigate(NavRoutes.savingsDetail(goal.id))
+                },
+                savingsViewModel = savingsViewModel,
+                onNavigate = { route -> navController.navigate(route) }
+            )
+        }
+
+        composable(
+            route = NavRoutes.SAVINGS_DETAIL,
+            arguments = listOf(navArgument("goalId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val goalId = backStackEntry.arguments?.getInt("goalId") ?: 0
+            SavingsDetailScreen(
+                goalId = goalId,
+                onBackClick = { navController.popBackStack() },
+                savingsViewModel = savingsViewModel,
+                onNavigate = { route -> navController.navigate(route) }
+            )
+        }
+
+        composable(NavRoutes.ADD_SAVINGS_GOAL) {
+            AddSavingsGoalScreen(
+                onBackClick = { navController.popBackStack() },
+                savingsViewModel = savingsViewModel,
+                onSuccess = { navController.popBackStack() }
+            )
+        }
+
+        composable(NavRoutes.CALENDAR) {
+            CalendarScreen(
+                onBackClick = { navController.popBackStack() },
+                transactionViewModel = transactionViewModel
+            )
+        }
