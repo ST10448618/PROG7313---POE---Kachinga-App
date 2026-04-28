@@ -18,6 +18,48 @@ class AchievementsViewModel(application: Application) : AndroidViewModel(applica
     private val categoryDao = KachingaDatabase.getDatabase(application).categoryDao()
     private val session = SessionManager(application)
 
+    val allAchievements: StateFlow<List<Achievement>> = dao.getAllAchievements()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val earnedCount: StateFlow<Int> = dao.getEarnedCount()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+
+    val currentXP: StateFlow<Int> = dao.getEarnedCount()
+        .map { it * 250 }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+
+    val currentLevel: StateFlow<Int> = dao.getEarnedCount()
+        .map { (it * 250 / 1000) + 1 }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 1)
+
+    val xpInCurrentLevel: StateFlow<Int> = dao.getEarnedCount()
+        .map { (it * 250) % 1000 }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+
+    val xpProgress: StateFlow<Float> = dao.getEarnedCount()
+        .map { ((it * 250) % 1000) / 1000f }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0f)
+
+    init {
+        viewModelScope.launch {
+            session.userId.collect { userId ->
+                if (userId > 0) {
+                    transactionDao.getAllTransactions(userId).collect {
+                        checkAndAwardAchievements()
+                    }
+                }
+            }
+        }
+        viewModelScope.launch {
+            session.userId.collect { userId ->
+                if (userId > 0) {
+                    savingsDao.getAllGoals(userId).collect {
+                        checkAndAwardAchievements()
+                    }
+                }
+            }
+        }
+    }
 
 
     fun checkAndAwardAchievements() {
