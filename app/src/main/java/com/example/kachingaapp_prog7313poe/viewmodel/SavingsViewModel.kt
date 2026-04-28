@@ -30,3 +30,9 @@ class SavingsViewModel(application: Application) : AndroidViewModel(application)
     private val _uiState = MutableStateFlow(SavingsUiState())
     val uiState: StateFlow<SavingsUiState> = _uiState.asStateFlow()
 }
+
+data class SavingsUiState(
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val successMessage: String? = null
+)
