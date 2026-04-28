@@ -111,3 +111,20 @@ fun TransactionsScreen(
             }
         )
     }
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = Color(0xFFF0FAF4),
+        bottomBar = {
+            BottomNavBar(
+                selectedIndex = 0,
+                onNavigate = onNavigate
+            )
+        }
+    ) { paddingValues ->
+        AnimatedScreen {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .verticalScroll(rememberScrollState())
+            )
