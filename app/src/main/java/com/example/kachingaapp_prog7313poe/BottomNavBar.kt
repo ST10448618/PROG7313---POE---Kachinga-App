@@ -93,4 +93,23 @@ fun BottomNavBar(
                                 else Color.Transparent
                             ),
                         contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = item.label,
+                            tint = if (isSelected) Color.White else TextSecondary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    Text(
+                        text = item.label,
+                        fontSize = 10.sp,
+                        color = if (isSelected) KachingaGreen else TextSecondary,
+                        fontWeight = if (isSelected) FontWeight.Bold
+                        else FontWeight.Normal
                     )
+                }
+            }
+        }
+    }
+}
