@@ -152,6 +152,33 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+
+    fun logout(onComplete: () -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                session.clearSession()
+            } catch (e: Exception) {
+                Log.e("AuthViewModel", "Logout exception: ${e.message}")
+            }
+            // Post to main
+            viewModelScope.launch(Dispatchers.Main) {
+                onComplete()
+            }
+        }
+    }
+
+    fun onNavigatedToHome() {
+        _navigateToHome.update { false }
+    }
+
+    fun onNavigatedAfterRegister() {
+        _navigateAfterRegister.update { false }
+    }
+
+    fun clearError() {
+        _uiState.update { it.copy(error = null) }
+    }
+
 }
 
 
