@@ -3,7 +3,6 @@ package com.example.kachingaapp_prog7313poe.data.repository
 import com.example.kachingaapp_prog7313poe.data.dao.TransactionDao
 import com.example.kachingaapp_prog7313poe.data.entity.AppTransaction
 import kotlinx.coroutines.flow.Flow
-import kotlin.compareTo
 
 
 class TransactionRepository(private val dao: TransactionDao) {
