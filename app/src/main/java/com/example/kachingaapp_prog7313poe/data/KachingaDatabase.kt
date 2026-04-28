@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 )
 abstract class KachingaDatabase : RoomDatabase() {
 
+    //Abstract Functions
     abstract fun userDao(): UserDao
     abstract fun transactionDao(): TransactionDao
     abstract fun categoryDao(): CategoryDao
@@ -56,6 +57,7 @@ abstract class KachingaDatabase : RoomDatabase() {
             }
         }
 
+        //SeedCategories Function
         private suspend fun seedCategories(dao: CategoryDao) {
             // userId = 0 means shared/default — visible to all users
             listOf(
@@ -76,6 +78,7 @@ abstract class KachingaDatabase : RoomDatabase() {
             ).forEach { dao.insertCategory(it) }
         }
 
+        //SeedAchievements Function
         private suspend fun seedAchievements(dao: AchievementDao) {
             listOf(
                 Achievement(name = "First Saver",       description = "Added your first transaction",        icon = "🐷", xpReward = 100),

@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 class CategoryRepository(private val dao: CategoryDao) {
 
+    //Functions for Categories
     fun getAll(userId: Int): Flow<List<Category>> = dao.getAllCategories(userId)
 
     fun getExpenseCategories(userId: Int): Flow<List<Category>> =
@@ -14,6 +15,7 @@ class CategoryRepository(private val dao: CategoryDao) {
     fun getIncomeCategories(userId: Int): Flow<List<Category>> =
         dao.getCategoriesByType(userId, false)
 
+    //Insert Function
     suspend fun insert(category: Category): Result<Unit> {
         return try {
             if (category.name.isBlank())
@@ -24,8 +26,10 @@ class CategoryRepository(private val dao: CategoryDao) {
             Result.failure(e)
         }
     }
+    //Delete Function
     suspend fun delete(category: Category) = dao.deleteCategory(category)
 
+    //Update Function
     suspend fun update(category: Category) = dao.updateCategory(category)
 
 }

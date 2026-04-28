@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 class UserRepository(private val dao: UserDao) {
 
+    //Register Function Created
     suspend fun register(user: User): Result<Unit> {
         return try {
             val existing = dao.getUserByEmail(user.email.trim())
@@ -19,6 +20,7 @@ class UserRepository(private val dao: UserDao) {
         }
     }
 
+    //Login Function Created
     suspend fun login(email: String, password: String): Result<User> {
         return try {
             val trimmedEmail = email.trim()

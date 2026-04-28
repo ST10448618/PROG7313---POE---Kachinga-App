@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 class TransactionRepository(private val dao: TransactionDao) {
 
+    //Transaction Functions created
     fun getAllTransactions(userId: Int): Flow<List<AppTransaction>> =
         dao.getAllTransactions(userId)
 
@@ -23,6 +24,7 @@ class TransactionRepository(private val dao: TransactionDao) {
     fun getExpensesByDateRange(userId: Int, start: Long, end: Long): Flow<List<AppTransaction>> =
         dao.getExpensesByDateRange(userId, start, end)
 
+    //Insert Function created
     suspend fun insert(transaction: AppTransaction): Result<Unit> {
         return try {
             if (transaction.title.isBlank())
@@ -36,7 +38,9 @@ class TransactionRepository(private val dao: TransactionDao) {
         }
     }
 
+    //Delete Function Created
     suspend fun delete(transaction: AppTransaction) = dao.deleteTransaction(transaction)
 
+    //Uodate Function Created
     suspend fun update(transaction: AppTransaction) = dao.updateTransaction(transaction)
 }
