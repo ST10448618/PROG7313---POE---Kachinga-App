@@ -45,8 +45,42 @@ class CategoryViewModel(application: Application) : AndroidViewModel(application
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    private val _uiState = MutableStateFlow(CategoryUiState())
+    val uiState: StateFlow<CategoryUiState> = _uiState.asStateFlow()
 
+    fun addCategory(name: String, icon: String, isExpense: Boolean) {
+        viewModelScope.launch {
+            val currentUserId = session.userId.first()
+            repo.insert(
+                Category(
+                    userId = currentUserId,
+                    name = name,
+                    icon = icon,
+                    isExpense = isExpense
+                )
+            ).fold(
+                onSuccess = {
+                    _uiState.update { it.copy(successMessage = "Category added!") }
+                },
+                onFailure = { e ->
+                    _uiState.update {
+                        it.copy(error = e.message ?: "Failed to add category")
+                    }
+                }
+            )
+        }
+    }
 
+    fun deleteCategory(category: Category) {
+        viewModelScope.launch { repo.delete(category) }
+    }
 
-
+    fun clearMessages() {
+        _uiState.update { it.copy(error = null, successMessage = null) }
+    }
 }
+
+data class CategoryUiState(
+    val error: String? = null,
+    val successMessage: String? = null
+)
