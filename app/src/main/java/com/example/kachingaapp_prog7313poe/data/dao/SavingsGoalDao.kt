@@ -4,6 +4,7 @@ import androidx.room.*
 import com.example.kachingaapp_prog7313poe.data.entity.SavingsGoal
 import kotlinx.coroutines.flow.Flow
 
+
 @Dao
 interface SavingsGoalDao {
 
