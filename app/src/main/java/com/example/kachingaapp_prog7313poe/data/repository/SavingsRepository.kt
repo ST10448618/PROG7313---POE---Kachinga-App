@@ -23,4 +23,17 @@ class SavingsRepository(private val dao: SavingsGoalDao) {
             Result.failure(e)
         }
     }
+
+    suspend fun deposit(goalId: Int, userId: Int, amount: Double): Result<Unit> {
+        return try {
+            if (amount <= 0)
+                return Result.failure(Exception("Deposit must be greater than 0"))
+            dao.addDeposit(goalId, userId, amount)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun delete(goal: SavingsGoal) = dao.deleteGoal(goal)
 }
