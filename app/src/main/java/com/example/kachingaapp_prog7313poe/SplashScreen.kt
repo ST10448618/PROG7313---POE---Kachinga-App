@@ -56,3 +56,8 @@ fun SplashScreen(onFinished: () -> Unit = {}) {
         }
     }
 }
+@Preview(showBackground = true)
+@Composable
+fun SplashScreenPreview() {
+    SplashScreen()
+}
