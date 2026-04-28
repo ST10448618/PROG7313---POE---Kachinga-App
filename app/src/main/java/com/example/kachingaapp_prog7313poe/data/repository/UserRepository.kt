@@ -52,4 +52,9 @@ class UserRepository(private val dao: UserDao) {
             Result.failure(Exception("Login error: ${e.message}"))
         }
     }
+
+    fun getUserById(id: Int): Flow<User?> = dao.getUserById(id)
+
+    suspend fun updateUser(user: User) = dao.updateUser(user)
+
 }
