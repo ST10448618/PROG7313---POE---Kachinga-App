@@ -49,6 +49,65 @@ class TransactionViewModel(application: Application) : AndroidViewModel(applicat
 
     private val _uiState = MutableStateFlow(TransactionUiState())
     val uiState: StateFlow<TransactionUiState> = _uiState.asStateFlow()
+
+    fun addTransaction(
+        title: String,
+        amount: String,
+        categoryId: Int,
+        categoryName: String,
+        categoryIcon: String,
+        isExpense: Boolean,
+        note: String = "",
+        description: String = "",
+        startTime: String = "",
+        endTime: String = "",
+        date: Long = System.currentTimeMillis(),
+        imagePath: String = "",
+        onSuccess: () -> Unit
+    ) {
+        val amountDouble = amount.toDoubleOrNull()
+        if (amountDouble == null || amountDouble <= 0) {
+            _uiState.update { it.copy(error = "Please enter a valid amount") }
+            return
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentUserId = session.userId.first()
+            if (currentUserId <= 0) {
+                _uiState.update { it.copy(error = "Please log in again") }
+                return@launch
+            }
+            _uiState.update { it.copy(isLoading = true, error = null) }
+            repo.insert(
+                AppTransaction(
+                    userId = currentUserId,
+                    title = title.ifBlank { categoryName },
+                    description = description,
+                    amount = amountDouble,
+                    categoryId = categoryId,
+                    categoryName = categoryName,
+                    categoryIcon = categoryIcon,
+                    isExpense = isExpense,
+                    note = note,
+                    imagePath = imagePath,
+                    date = date,
+                    startTime = startTime,
+                    endTime = endTime
+                )
+            ).fold(
+                onSuccess = {
+                    _uiState.update {
+                        it.copy(isLoading = false, successMessage = "Transaction added!")
+                    }
+                    viewModelScope.launch(Dispatchers.Main) { onSuccess() }
+                },
+                onFailure = { e ->
+                    _uiState.update {
+                        it.copy(isLoading = false, error = e.message ?: "Failed")
+                    }
+                }
+            )
+        }
+    }
 }
 
 data class TransactionUiState(
