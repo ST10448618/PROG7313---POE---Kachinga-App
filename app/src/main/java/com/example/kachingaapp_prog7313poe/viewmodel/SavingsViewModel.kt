@@ -65,6 +65,40 @@ class SavingsViewModel(application: Application) : AndroidViewModel(application)
         else flowOf(null)
     }
 
+    fun deposit(goalId: Int, amount: Double) {
+        viewModelScope.launch {
+            val currentUserId = session.userId.first()
+            if (currentUserId <= 0) return@launch
+            repo.deposit(goalId, currentUserId, amount).fold(
+                onSuccess = {
+                    _uiState.update { it.copy(successMessage = "Deposit added!") }
+                },
+                onFailure = { e ->
+                    _uiState.update { it.copy(error = e.message ?: "Deposit failed") }
+                }
+            )
+        }
+    }
+
+    fun deposit(goalId: Int, amount: Double) {
+        viewModelScope.launch {
+            val currentUserId = session.userId.first()
+            if (currentUserId <= 0) return@launch
+            repo.deposit(goalId, currentUserId, amount).fold(
+                onSuccess = {
+                    _uiState.update { it.copy(successMessage = "Deposit added!") }
+                },
+                onFailure = { e ->
+                    _uiState.update { it.copy(error = e.message ?: "Deposit failed") }
+                }
+            )
+        }
+    }
+
+    fun clearMessages() {
+        _uiState.update { it.copy(error = null, successMessage = null) }
+    }
+
 
 
 
