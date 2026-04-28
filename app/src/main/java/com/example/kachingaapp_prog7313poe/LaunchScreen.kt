@@ -71,3 +71,38 @@ fun LaunchScreen(
                     .padding(horizontal = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+// Log In button
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(KachingaGreenDark)
+                        .clickable { onLoginClick() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Log In",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+
+                // Sign Up button
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .border(2.dp, KachingaGreenDark, RoundedCornerShape(12.dp))
+                        .clickable { onSignUpClick() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Sign Up",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = KachingaGreenDark
+                    )
+                }
