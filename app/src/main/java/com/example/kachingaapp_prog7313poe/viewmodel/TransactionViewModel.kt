@@ -50,3 +50,9 @@ class TransactionViewModel(application: Application) : AndroidViewModel(applicat
     private val _uiState = MutableStateFlow(TransactionUiState())
     val uiState: StateFlow<TransactionUiState> = _uiState.asStateFlow()
 }
+
+data class TransactionUiState(
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val successMessage: String? = null
+)
