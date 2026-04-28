@@ -234,3 +234,77 @@ fun SavingsScreen(
         }
     }
 }
+@Composable
+fun SavingsGoalCard(
+    icon: String,
+    name: String,
+    dates: String,
+    saved: String,
+    target: String,
+    progress: Float,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(KachingaGreenLight),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(icon, fontSize = 22.sp)
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        name,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = TextPrimary
+                    )
+                    Text(dates, fontSize = 12.sp, color = TextSecondary)
+                }
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        saved,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = TextPrimary
+                    )
+                    Text(target, fontSize = 12.sp, color = TextSecondary)
+                }
+            }
+
+            LinearProgressIndicator(
+                progress = { progress },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(8.dp)
+                    .clip(RoundedCornerShape(4.dp)),
+                color = KachingaGreen,
+                trackColor = Color(0xFFE0E0E0)
+            )
+
+            Text(
+                "${(progress * 100).toInt()}% saved",
+                fontSize = 11.sp,
+                color = KachingaGreen,
+                modifier = Modifier.padding(top = 6.dp)
+            )
+        }
+    }
+}
