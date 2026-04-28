@@ -161,3 +161,22 @@ fun TransactionsScreen(
                             modifier = Modifier.weight(1f),
                             textAlign = TextAlign.Center
                         )
+                        // Add transaction button
+                        Box(
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(CircleShape)
+                                .background(Color.White.copy(alpha = 0.2f))
+                                .clickable { onNavigate?.invoke(NavRoutes.ADD_TRANSACTION) },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Filled.Add,
+                                contentDescription = "Add Transaction",
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
