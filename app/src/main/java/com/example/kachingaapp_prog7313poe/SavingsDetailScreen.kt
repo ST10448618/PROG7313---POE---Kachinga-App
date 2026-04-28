@@ -195,3 +195,137 @@ fun SavingsDetailScreen(
                             .verticalScroll(rememberScrollState())
                             .padding(bottom = 90.dp)
                     ) {
+                    // ── Green Header ──────────────────────────────
+                    }
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(KachingaGreen)
+                                .padding(horizontal = 20.dp)
+                                .padding(top = 48.dp, bottom = 32.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            // Top bar
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 24.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    Icons.Filled.ArrowBack,
+                                    contentDescription = "Back",
+                                    tint = Color.White,
+                                    modifier = Modifier
+                                        .size(44.dp)
+                                        .clickable { onBackClick() }
+                                        .wrapContentSize(Alignment.Center)
+                                )
+                                Text(
+                                    goal.name,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White,
+                                    modifier = Modifier.weight(1f),
+                                    textAlign = TextAlign.Center
+                                )
+                                // Delete goal
+                                Box(
+                                    modifier = Modifier
+                                        .size(36.dp)
+                                        .clip(CircleShape)
+                                        .background(Color.White.copy(alpha = 0.2f))
+                                        .clickable {
+                                            savingsViewModel.deleteGoal(goal)
+                                            onBackClick()
+                                        },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        Icons.Filled.Delete,
+                                        contentDescription = "Delete goal",
+                                        tint = Color.White,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
+                            }
+
+                            // Goal icon
+                            Box(
+                                modifier = Modifier
+                                    .size(88.dp)
+                                    .clip(RoundedCornerShape(22.dp))
+                                    .background(
+                                        if (isComplete) Color(0xFFFFD700)
+                                        else KachingaGreenDark
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    if (isComplete) "🏆" else goal.icon,
+                                    fontSize = 40.sp
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            if (isComplete) {
+                                Text(
+                                    "Goal Complete! 🎉",
+                                    fontSize = 14.sp,
+                                    color = Color(0xFFFFD700),
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                            }
+
+                            // Saved amount
+                            Text(
+                                "R ${"%.2f".format(goal.savedAmount)}",
+                                fontSize = 34.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                            Text(
+                                "saved of R ${"%.2f".format(goal.targetAmount)}",
+                                fontSize = 13.sp,
+                                color = Color.White.copy(alpha = 0.8f),
+                                modifier = Modifier.padding(vertical = 4.dp)
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // Progress bar
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 6.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        "${(progress * 100).toInt()}% complete",
+                                        fontSize = 12.sp,
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        if (isComplete) "Completed!"
+                                        else "R ${"%.2f".format(remaining)} left",
+                                        fontSize = 12.sp,
+                                        color = Color.White.copy(alpha = 0.8f)
+                                    )
+                                }
+                                LinearProgressIndicator(
+                                    progress = { progress },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(10.dp)
+                                        .clip(RoundedCornerShape(5.dp)),
+                                    color = Color.White,
+                                    trackColor = Color.White.copy(alpha = 0.3f)
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
