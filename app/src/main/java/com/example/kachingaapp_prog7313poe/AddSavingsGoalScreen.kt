@@ -92,3 +92,88 @@ fun AddSavingsGoalScreen(
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
+
+                    // Icon selector row
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 20.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        goalIcons.forEach { icon ->
+                            Box(
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(
+                                        if (selectedIcon == icon) KachingaGreen
+                                        else Color(0xFFF0FAF4)
+                                    )
+                                    .clickable { selectedIcon = icon },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(icon, fontSize = 18.sp)
+                            }
+                        }
+                    }
+
+                    FormLabel("Goal Name")
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        placeholder = { Text("e.g. New Car", color = TextHint) },
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        singleLine = true,
+                        colors = kachingaTextFieldColors()
+                    )
+
+                    FormLabel("Target Amount (R)")
+                    OutlinedTextField(
+                        value = targetAmount,
+                        onValueChange = { targetAmount = it },
+                        placeholder = { Text("0.00", color = TextHint) },
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Decimal),
+                        colors = kachingaTextFieldColors()
+                    )
+
+                    if (error != null) {
+                        Text(error!!, color = KachingaRed, fontSize = 13.sp,
+                            modifier = Modifier.padding(bottom = 12.dp))
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(KachingaGreen)
+                            .clickable {
+                                val target = targetAmount.toDoubleOrNull()
+                                when {
+                                    name.isBlank() -> {
+                                        error = "Goal name is required"
+                                        return@clickable
+                                    }
+                                    target == null || target <= 0 -> {
+                                        error = "Enter a valid target amount"
+                                        return@clickable
+                                    }
+                                }
+                                savingsViewModel.addGoal(name, selectedIcon, target!!)
+                                onSuccess()
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Create Goal", fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold, color = Color.White)
+                    }
+                }
+            }
+        }
+    }
+}
