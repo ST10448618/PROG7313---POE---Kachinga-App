@@ -106,3 +106,24 @@ fun LaunchScreen(
                         color = KachingaGreenDark
                     )
                 }
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Forgot Password?",
+                    fontSize = 14.sp,
+                    color = KachingaGreenDark.copy(alpha = 0.8f),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun LaunchScreenPreview() {
+    LaunchScreen(
+        onLoginClick = {},
+        onSignUpClick = {}
+    )
+}
