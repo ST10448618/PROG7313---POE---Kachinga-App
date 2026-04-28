@@ -197,3 +197,59 @@ fun TransactionsScreen(
                             )
                         }
                     }
+                    // Summary card
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(20.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        elevation = CardDefaults.cardElevation(4.dp)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                "Total Balance",
+                                fontSize = 12.sp,
+                                color = TextSecondary,
+                                modifier = Modifier.padding(bottom = 2.dp)
+                            )
+                            Text(
+                                "R ${formatAmount(balance)}",
+                                fontSize = 28.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = if (balance < 0) KachingaRed else TextPrimary,
+                                modifier = Modifier.padding(bottom = 12.dp)
+                            )
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(KachingaGreenLight)
+                                        .padding(10.dp)
+                                ) {
+                                    Text("Income", fontSize = 11.sp, color = TextSecondary)
+                                    Text(
+                                        "R ${formatAmount(totalIncome)}",
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = KachingaGreen
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(KachingaRedLight)
+                                        .padding(10.dp)
+                                ) {
+                                    Text("Expenses", fontSize = 11.sp, color = TextSecondary)
+                                    Text(
+                                        "-R ${formatAmount(totalExpenses)}",
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = KachingaRed
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
