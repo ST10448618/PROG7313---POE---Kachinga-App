@@ -195,8 +195,8 @@ fun SavingsDetailScreen(
                             .verticalScroll(rememberScrollState())
                             .padding(bottom = 90.dp)
                     ) {
-                    // ── Green Header ──────────────────────────────
-                    }
+
+                        // ── Green Header ──────────────────────────────
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -329,3 +329,163 @@ fun SavingsDetailScreen(
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
+
+                        // ── Stats Row ─────────────────────────────────
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .padding(bottom = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            StatCard(
+                                label = "Target",
+                                value = "R ${"%.0f".format(goal.targetAmount)}",
+                                icon = Icons.Filled.Flag,
+                                modifier = Modifier.weight(1f)
+                            )
+                            StatCard(
+                                label = "Saved",
+                                value = "R ${"%.0f".format(goal.savedAmount)}",
+                                icon = Icons.Filled.Savings,
+                                modifier = Modifier.weight(1f)
+                            )
+                            StatCard(
+                                label = "Remaining",
+                                value = "R ${"%.0f".format(remaining.coerceAtLeast(0.0))}",
+                                icon = Icons.Filled.AccessTime,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+
+                        // ── Add Deposit Button ────────────────────────
+                        if (!isComplete) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp)
+                                    .padding(bottom = 16.dp)
+                                    .height(52.dp)
+                                    .clip(RoundedCornerShape(14.dp))
+                                    .background(KachingaGreen)
+                                    .clickable { showDepositDialog = true },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Icon(
+                                        Icons.Filled.Add,
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                    Text(
+                                        "Add Deposit",
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
+                                    )
+                                }
+                            }
+                        }
+
+                        // ── Tip Card ──────────────────────────────────
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .padding(bottom = 16.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = KachingaGreenLight
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    Icons.Filled.Lightbulb,
+                                    contentDescription = null,
+                                    tint = KachingaGreen,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(10.dp))
+                                val daysLeft = if (progress < 1f && goal.savedAmount > 0) {
+                                    val ratePerDay = goal.savedAmount /
+                                            ((System.currentTimeMillis() - 0L) /
+                                                    (1000 * 60 * 60 * 24.0)).coerceAtLeast(1.0)
+                                    if (ratePerDay > 0)
+                                        (remaining / ratePerDay).toInt()
+                                    else null
+                                } else null
+
+                                Text(
+                                    text = when {
+                                        isComplete ->
+                                            "Amazing! You reached your goal. Set a new one!"
+                                        daysLeft != null ->
+                                            "At your current pace, you'll reach this goal in ~$daysLeft days."
+                                        else ->
+                                            "Keep saving consistently to reach your goal faster!"
+                                    },
+                                    fontSize = 12.sp,
+                                    color = KachingaGreenDark
+                                )
+                            }
+                        }
+                    }
+                }
+
+                BottomNavBar(
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                    selectedIndex = 3,
+                    onNavigate = onNavigate
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun StatCard(
+    label: String,
+    value: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(1.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = KachingaGreen,
+                modifier = Modifier.size(18.dp)
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(
+                value,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
+                color = TextPrimary
+            )
+            Text(
+                label,
+                fontSize = 10.sp,
+                color = TextSecondary
+            )
+        }
+    }
+}
