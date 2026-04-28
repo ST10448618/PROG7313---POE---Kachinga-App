@@ -62,3 +62,31 @@ fun TransactionsScreen(
             transactionViewModel.clearMessages()
         }
     }
+// Full screen image viewer
+    viewingImage?.let { path ->
+        Dialog(onDismissRequest = { viewingImage = null }) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.Black)
+                    .clickable { viewingImage = null }
+            ) {
+                AsyncImage(
+                    model = File(path),
+                    contentDescription = "Receipt",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit
+                )
+                Text(
+                    "Tap to close",
+                    fontSize = 12.sp,
+                    color = Color.White.copy(alpha = 0.7f),
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(12.dp)
+                )
+            }
+        }
+    }
