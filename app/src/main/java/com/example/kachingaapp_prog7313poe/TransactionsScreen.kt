@@ -33,3 +33,8 @@ import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun TransactionsScreen(
+    onBackClick: () -> Unit,
+    transactionViewModel: TransactionViewModel,
+    onNavigate: ((String) -> Unit)? = null
+)
