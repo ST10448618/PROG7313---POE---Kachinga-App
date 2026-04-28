@@ -127,4 +127,18 @@ fun TransactionsScreen(
                     .fillMaxSize()
                     .padding(paddingValues)
                     .verticalScroll(rememberScrollState())
-            )
+            ){
+                // Green header
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(KachingaGreen)
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 48.dp, bottom = 24.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 20.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
