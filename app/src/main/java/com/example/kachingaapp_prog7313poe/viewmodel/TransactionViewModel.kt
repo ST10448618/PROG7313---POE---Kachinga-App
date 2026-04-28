@@ -108,6 +108,20 @@ class TransactionViewModel(application: Application) : AndroidViewModel(applicat
             )
         }
     }
+
+    fun getByDateRange(start: Long, end: Long): Flow<List<AppTransaction>> {
+        val currentUserId = userId.value
+        return if (currentUserId > 0)
+            repo.getByDateRange(currentUserId, start, end)
+        else flowOf(emptyList())
+    }
+
+    fun getExpensesByDateRange(start: Long, end: Long): Flow<List<AppTransaction>> {
+        val currentUserId = userId.value
+        return if (currentUserId > 0)
+            repo.getExpensesByDateRange(currentUserId, start, end)
+        else flowOf(emptyList())
+    }
 }
 
 data class TransactionUiState(
