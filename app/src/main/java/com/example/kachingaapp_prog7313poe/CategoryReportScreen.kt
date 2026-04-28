@@ -161,3 +161,273 @@ fun CategoryReportScreen(
             }
         }
     }
+    AnimatedScreen {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFF0FAF4))
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(bottom = 90.dp)
+            ) {
+                // Header
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(KachingaGreen)
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 48.dp, bottom = 24.dp)
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back",
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .size(44.dp)
+                                    .clickable { onBackClick() }
+                                    .padding(10.dp)
+                            )
+                            Text(
+                                "Category Report",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                modifier = Modifier.weight(1f),
+                                textAlign = TextAlign.Center
+                            )
+                            Spacer(modifier = Modifier.size(44.dp))
+                        }
+
+                        // Total summary
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            elevation = CardDefaults.cardElevation(4.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    "Total Spent",
+                                    fontSize = 13.sp,
+                                    color = TextSecondary
+                                )
+                                Text(
+                                    "R ${"%.2f".format(totalSpent)}",
+                                    fontSize = 28.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = KachingaRed
+                                )
+                                Text(
+                                    "${filteredTransactions.size} transactions  •  ${categoryTotals.size} categories",
+                                    fontSize = 12.sp,
+                                    color = TextSecondary,
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+
+                Column(modifier = Modifier.padding(16.dp)) {
+
+                    // Period preset chips
+                    Text(
+                        "Select Period",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = TextPrimary,
+                        modifier = Modifier.padding(bottom = 12.dp)
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        listOf("This Week", "This Month", "Last Month", "This Year")
+                            .forEach { preset ->
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(50.dp))
+                                        .background(
+                                            if (selectedPreset == preset) KachingaGreen
+                                            else Color.White
+                                        )
+                                        .clickable { applyPreset(preset) }
+                                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                                ) {
+                                    Text(
+                                        preset,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (selectedPreset == preset) Color.White
+                                        else TextSecondary
+                                    )
+                                }
+                            }
+                    }
+
+                    // Custom date range
+                    Text(
+                        "Or pick custom dates",
+                        fontSize = 13.sp,
+                        color = TextSecondary,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 20.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(Color.White)
+                                .clickable { showDatePicker(true) }
+                                .padding(12.dp)
+                        ) {
+                            Column {
+                                Text("From", fontSize = 11.sp, color = TextSecondary)
+                                Text(
+                                    dateFormat.format(Date(startMillis)),
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = TextPrimary
+                                )
+                            }
+                        }
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(Color.White)
+                                .clickable { showDatePicker(false) }
+                                .padding(12.dp)
+                        ) {
+                            Column {
+                                Text("To", fontSize = 11.sp, color = TextSecondary)
+                                Text(
+                                    dateFormat.format(Date(endMillis)),
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = TextPrimary
+                                )
+                            }
+                        }
+                    }
+
+                    // Category breakdown
+                    Text(
+                        "Spending by Category",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = TextPrimary,
+                        modifier = Modifier.padding(bottom = 12.dp)
+                    )
+
+                    if (categoryTotals.isEmpty()) {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(40.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text("📊", fontSize = 40.sp)
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Text(
+                                    "No expenses in this period",
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = TextPrimary
+                                )
+                                Text(
+                                    "Try a different date range",
+                                    fontSize = 13.sp,
+                                    color = TextSecondary
+                                )
+                            }
+                        }
+                    } else {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            elevation = CardDefaults.cardElevation(1.dp)
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                categoryTotals.forEachIndexed { index, cat ->
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 10.dp)
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(42.dp)
+                                                    .clip(RoundedCornerShape(12.dp))
+                                                    .background(KachingaRedLight),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Text(cat.categoryIcon, fontSize = 20.sp)
+                                            }
+                                            Spacer(modifier = Modifier.width(12.dp))
+                                            Column(modifier = Modifier.weight(1f)) {
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.SpaceBetween
+                                                ) {
+                                                    Text(
+                                                        cat.categoryName,
+                                                        fontSize = 14.sp,
+                                                        fontWeight = FontWeight.Bold,
+                                                        color = TextPrimary
+                                                    )
+                                                    Text(
+                                                        "R ${"%.2f".format(cat.total)}",
+                                                        fontSize = 14.sp,
+                                                        fontWeight = FontWeight.Bold,
+                                                        color = KachingaRed
+                                                    )
+                                                }
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.SpaceBetween
+                                                ) {
+                                                    Text(
+                                                        "${cat.count} transaction${if (cat.count != 1) "s" else ""}",
+                                                        fontSize = 12.sp,
+                                                        color = TextSecondary
+                                                    )
+                                                    Text(
+                                                        "${"%.1f".format(cat.percentage)}%",
+                                                        fontSize = 12.sp,
+                                                        color = TextSecondary
+                                                    )
+                                                }
+
+                                                Spacer(modifier = Modifier.height(6.dp))
