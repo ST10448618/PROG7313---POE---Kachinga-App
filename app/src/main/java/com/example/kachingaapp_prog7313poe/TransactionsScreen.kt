@@ -180,3 +180,20 @@ fun TransactionsScreen(
 
                         Spacer(modifier = Modifier.width(8.dp))
 
+                      // Category report button
+                        Box(
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(CircleShape)
+                                .background(Color.White.copy(alpha = 0.2f))
+                                .clickable { onNavigate?.invoke(NavRoutes.CATEGORY_REPORT) },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Filled.PieChart,
+                                contentDescription = "Category Report",
+                                tint = Color.White,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
