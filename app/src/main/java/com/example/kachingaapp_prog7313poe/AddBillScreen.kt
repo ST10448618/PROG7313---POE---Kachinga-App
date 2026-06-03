@@ -144,3 +144,83 @@ fun AddBillScreen(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         colors = kachingaTextFieldColors()
                     )
+
+                    // Due day
+                    FormLabel("Due Day (1-31)")
+                    OutlinedTextField(
+                        value = dueDay,
+                        onValueChange = { dueDay = it.take(2) },
+                        placeholder = { Text("e.g. 15", color = TextHint) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        colors = kachingaTextFieldColors()
+                    )
+
+                    // Category
+                    FormLabel("Category")
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Color(0xFFF7F7F7))
+                            .clickable { showCategoryPicker = !showCategoryPicker }
+                            .padding(16.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                selectedCategory,
+                                fontSize = 14.sp,
+                                color = TextPrimary,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Icon(
+                                if (showCategoryPicker) Icons.Filled.ExpandLess
+                                else Icons.Filled.ExpandMore,
+                                contentDescription = null,
+                                tint = TextSecondary
+                            )
+                        }
+                    }
+
+                    if (showCategoryPicker) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(Color(0xFFF7F7F7))
+                                .padding(8.dp)
+                                .padding(bottom = 16.dp)
+                        ) {
+                            billCategories.forEach { (cat, icon) ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(
+                                            if (selectedCategory == cat)
+                                                KachingaGreenLight else Color.Transparent
+                                        )
+                                        .clickable {
+                                            selectedCategory = cat
+                                            selectedIcon = icon
+                                            showCategoryPicker = false
+                                        }
+                                        .padding(12.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(icon, fontSize = 18.sp)
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(cat, fontSize = 14.sp, color = TextPrimary)
+                                }
+                            }
+                        }
+                    } else {
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
