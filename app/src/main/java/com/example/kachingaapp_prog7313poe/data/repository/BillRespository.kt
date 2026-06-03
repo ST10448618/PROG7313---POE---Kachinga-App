@@ -23,3 +23,12 @@ class BillRepository(private val dao: BillDao) {
             Result.failure(e)
         }
     }
+
+    suspend fun delete(bill: Bill) = dao.deleteBill(bill)
+
+    suspend fun update(bill: Bill) = dao.updateBill(bill)
+
+    suspend fun deactivate(billId: Int) = dao.deactivateBill(billId)
+
+    suspend fun getBillsForMonth(userId: Int): List<Bill> = dao.getBillsForMonth(userId)
+}
