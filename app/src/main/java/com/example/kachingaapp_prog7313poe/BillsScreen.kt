@@ -233,3 +233,90 @@ fun BillsScreen(
                         }
                     }
                 }
+
+                BottomNavBar(
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                    selectedIndex = -1,
+                    onNavigate = onNavigate
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun BillRow(
+    upcoming: com.example.prog7313_poe_kachinga.viewmodel.UpcomingBill,
+    onDelete: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(44.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(
+                    if (upcoming.isOverdue) Color(0xFFFFF0F0) else KachingaGreenLight
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(upcoming.bill.icon, fontSize = 20.sp)
+        }
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                upcoming.bill.name,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = TextPrimary
+            )
+            Text(
+                "R ${"%.2f".format(upcoming.bill.amount)}",
+                fontSize = 12.sp,
+                color = TextSecondary
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(50.dp))
+                .background(
+                    if (upcoming.isOverdue) Color(0xFFFFF0F0)
+                    else if (upcoming.daysUntilDue <= 3) Color(0xFFFFF9E6)
+                    else Color(0xFFF0FAF4)
+                )
+                .padding(horizontal = 10.dp, vertical = 6.dp)
+        ) {
+            Text(
+                when {
+                    upcoming.isOverdue -> "Overdue"
+                    upcoming.daysUntilDue == 0 -> "Today"
+                    upcoming.daysUntilDue == 1 -> "Tomorrow"
+                    else -> "In ${upcoming.daysUntilDue} days"
+                },
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                color = when {
+                    upcoming.isOverdue -> KachingaRed
+                    upcoming.daysUntilDue <= 3 -> Color(0xFFFF9800)
+                    else -> KachingaGreen
+                }
+            )
+        }
+
+        IconButton(onClick = onDelete) {
+            Icon(
+                Icons.Filled.Close,
+                contentDescription = "Delete",
+                tint = TextSecondary,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+}
