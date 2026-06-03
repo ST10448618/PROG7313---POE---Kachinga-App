@@ -292,3 +292,65 @@ fun AddBillScreen(
                             Spacer(modifier = Modifier.height(16.dp))
                         }
                     }
+                    // Error
+                    if (uiState.error != null) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 12.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(0xFFFFF0F0)
+                            )
+                        ) {
+                            Text(
+                                uiState.error!!,
+                                color = KachingaRed,
+                                fontSize = 13.sp,
+                                modifier = Modifier.padding(12.dp)
+                            )
+                        }
+                    }
+
+                    // Submit
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(
+                                if (uiState.isLoading) KachingaGreen.copy(alpha = 0.5f)
+                                else KachingaGreen
+                            )
+                            .clickable(enabled = !uiState.isLoading) {
+                                billViewModel.addBill(
+                                    name = billName,
+                                    amount = amount,
+                                    dueDay = dueDay,
+                                    category = selectedCategory,
+                                    icon = selectedIcon,
+                                    onSuccess = onSuccess
+                                )
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (uiState.isLoading) {
+                            CircularProgressIndicator(
+                                color = Color.White,
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Text(
+                                "Add Bill Reminder",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
