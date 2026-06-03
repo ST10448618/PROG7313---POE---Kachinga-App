@@ -297,3 +297,68 @@ fun InsightCard(insight: com.example.prog7313_poe_kachinga.viewmodel.SpendingIns
         }
     }
 }
+
+@Composable
+fun CategoryChangeRow(change: com.example.prog7313_poe_kachinga.viewmodel.CategorySpending) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                change.category,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
+                color = TextPrimary
+            )
+            Text(
+                "R${"%.2f".format(change.currentMonth)}",
+                fontSize = 12.sp,
+                color = TextSecondary
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(50.dp))
+                .background(
+                    when (change.trend) {
+                        "UP" -> Color(0xFFFFE6E6)
+                        "DOWN" -> Color(0xFFE6F7FF)
+                        else -> Color(0xFFF0F0F0)
+                    }
+                )
+                .padding(horizontal = 10.dp, vertical = 4.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    when (change.trend) {
+                        "UP" -> "↑"
+                        "DOWN" -> "↓"
+                        else -> "→"
+                    },
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = when (change.trend) {
+                        "UP" -> KachingaRed
+                        "DOWN" -> KachingaGreen
+                        else -> TextSecondary
+                    }
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    "${"%.1f".format(kotlin.math.abs(change.percentChange))}%",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = when (change.trend) {
+                        "UP" -> KachingaRed
+                        "DOWN" -> KachingaGreen
+                        else -> TextSecondary
+                    }
+                )
+            }
+        }
+    }
+}
