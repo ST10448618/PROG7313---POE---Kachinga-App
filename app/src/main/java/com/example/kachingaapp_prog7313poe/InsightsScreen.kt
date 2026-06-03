@@ -27,9 +27,13 @@ import com.example.kachingaapp_prog7313poe.ui.theme.*
 import com.example.kachingaapp_prog7313poe.viewmodel.InsightsViewModel
 import com.example.kachingaapp_prog7313poe.navigation.NavRoutes
 import com.example.prog7313_poe_kachinga.AnimatedScreen
+import com.example.prog7313_poe_kachinga.BottomNavBar
+import com.example.prog7313_poe_kachinga.ui.theme.Divider
 import com.example.prog7313_poe_kachinga.ui.theme.KachingaGreen
 import com.example.prog7313_poe_kachinga.ui.theme.KachingaGreenLight
 import com.example.prog7313_poe_kachinga.ui.theme.KachingaRed
+import com.example.prog7313_poe_kachinga.ui.theme.TextPrimary
+import com.example.prog7313_poe_kachinga.ui.theme.TextSecondary
 
 @Composable
 fun InsightsScreen(
@@ -141,3 +145,101 @@ fun InsightsScreen(
                             )
                         }
                     }
+
+                    // Insights List
+                    Text(
+                        "Key Insights",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = TextPrimary,
+                        modifier = Modifier.padding(bottom = 12.dp)
+                    )
+
+                    if (state.isLoading) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 40.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                color = KachingaGreen,
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+                    } else if (state.insights.isEmpty()) {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(40.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text("🔍", fontSize = 36.sp)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    "No insights yet",
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = TextPrimary
+                                )
+                                Text(
+                                    "Add more transactions to see spending patterns",
+                                    fontSize = 12.sp,
+                                    color = TextSecondary
+                                )
+                            }
+                        }
+                    } else {
+                        state.insights.forEach { insight ->
+                            InsightCard(insight = insight)
+                            Spacer(modifier = Modifier.height(12.dp))
+                        }
+                    }
+
+                    // Category Changes
+                    if (state.categoryChanges.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            "Category Trends",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = TextPrimary,
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        )
+
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            elevation = CardDefaults.cardElevation(1.dp)
+                        ) {
+                            Column(modifier = Modifier.padding(12.dp)) {
+                                state.categoryChanges.take(5).forEachIndexed { index, change ->
+                                    CategoryChangeRow(change = change)
+                                    if (index < state.categoryChanges.take(5).lastIndex) {
+                                        HorizontalDivider(
+                                            color = Divider,
+                                            thickness = 0.5.dp,
+                                            modifier = Modifier.padding(vertical = 8.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            BottomNavBar(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                selectedIndex = -1,
+                onNavigate = onNavigate
+            )
+        }
+    }
+}
