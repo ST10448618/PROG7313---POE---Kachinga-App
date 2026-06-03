@@ -51,7 +51,8 @@ fun SavingsScreen(
     onBackClick: () -> Unit,
     onGoalClick: (SavingsGoal) -> Unit,
     savingsViewModel: SavingsViewModel,
-    onNavigate: (String) -> Unit
+    currentRoute: String = NavRoutes.SAVINGS,  // ADD THIS
+    onNavigate: (String) -> Unit  // ADD THIS
 ) {
     val goals by savingsViewModel.allGoals.collectAsState()
 
@@ -144,6 +145,7 @@ fun SavingsScreen(
                         }
                     }
                 }
+
                 Column(
                     modifier = Modifier.padding(20.dp)
                 ) {
