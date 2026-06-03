@@ -17,12 +17,12 @@ class SavingsViewModel(application: Application) : AndroidViewModel(application)
     )
     private val session = SessionManager(application)
 
-    private val userId: StateFlow<Int> = session.userId
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), -1)
+    private val userId: StateFlow<String> = session.userId
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
     val allGoals: StateFlow<List<SavingsGoal>> = userId
         .flatMapLatest { id ->
-            if (id > 0) repo.getAll(id)
+            if (id.isNotBlank()) repo.getAll(id)
             else flowOf(emptyList())
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -33,10 +33,12 @@ class SavingsViewModel(application: Application) : AndroidViewModel(application)
     fun addGoal(name: String, icon: String, targetAmount: Double) {
         viewModelScope.launch {
             val currentUserId = session.userId.first()
-            if (currentUserId <= 0) return@launch
+            //Prevent insertions if unauthenticated or empty string token detected
+            if (currentUserId.isBlank()) return@launch
+
             repo.insert(
                 SavingsGoal(
-                    userId = currentUserId,
+                    userId = currentUserId, //Now safely passes down the String UID
                     name = name,
                     icon = icon,
                     targetAmount = targetAmount
@@ -60,7 +62,8 @@ class SavingsViewModel(application: Application) : AndroidViewModel(application)
 
     fun getGoalById(id: Int): Flow<SavingsGoal?> {
         val currentUserId = userId.value
-        return if (currentUserId > 0)
+        //Validates the token before sending transaction to database repository layer
+        return if (currentUserId.isNotBlank())
             repo.getById(id, currentUserId)
         else flowOf(null)
     }
@@ -68,7 +71,9 @@ class SavingsViewModel(application: Application) : AndroidViewModel(application)
     fun deposit(goalId: Int, amount: Double) {
         viewModelScope.launch {
             val currentUserId = session.userId.first()
-            if (currentUserId <= 0) return@launch
+            //Prevent query execution if string session token validation fails
+            if (currentUserId.isBlank()) return@launch
+
             repo.deposit(goalId, currentUserId, amount).fold(
                 onSuccess = {
                     _uiState.update { it.copy(successMessage = "Deposit added!") }
@@ -80,20 +85,7 @@ class SavingsViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun deposit(goalId: Int, amount: Double) {
-        viewModelScope.launch {
-            val currentUserId = session.userId.first()
-            if (currentUserId <= 0) return@launch
-            repo.deposit(goalId, currentUserId, amount).fold(
-                onSuccess = {
-                    _uiState.update { it.copy(successMessage = "Deposit added!") }
-                },
-                onFailure = { e ->
-                    _uiState.update { it.copy(error = e.message ?: "Deposit failed") }
-                }
-            )
-        }
-    }
+
 
     fun clearMessages() {
         _uiState.update { it.copy(error = null, successMessage = null) }

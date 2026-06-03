@@ -54,7 +54,7 @@ class InsightsViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             // React to userId, salary, savingsPct, AND transactions all at once
             session.userId.collect { userId ->
-                if (userId > 0) {
+                if (userId.isNotBlank()) {
                     // Combine transactions + salary + savingsPct into one stream
                     combine(
                         transactionDao.getAllTransactions(userId),
@@ -70,7 +70,7 @@ class InsightsViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    private fun generateInsights(userId: Int) {
+    private fun generateInsights(userId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _insightState.update { it.copy(isLoading = true) }
             try {

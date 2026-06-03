@@ -48,7 +48,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 session.minMonthlyGoal,
                 session.maxMonthlyGoal
             ) { args ->
-                val userId = args[0] as Int
+                val userId = args[0] as String
                 val name = args[1] as String
                 val email = args[2] as String
                 val income = args[3] as Double
@@ -60,8 +60,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 var fullName = name
                 var userEmail = email
 
-                if (userId > 0) {
-                    val user = userDao.getUserById(userId).first()
+                if (userId.isNotBlank()) {
+                    val user = userDao.getUserByIdImmediate(userId) // Use immediate suspend variant if within background processing blocks
                     fullName = user?.fullName ?: name
                     userEmail = user?.email ?: email
                 }
@@ -87,7 +87,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     fun savePersonalInfo(fullName: String, email: String, phone: String) {
         viewModelScope.launch {
             val userId = session.userId.first()
-            if (userId > 0) {
+            if (userId.isNotBlank()) {
                 val existing = userDao.getUserById(userId).first()
                 if (existing != null) {
                     userDao.updateUser(
