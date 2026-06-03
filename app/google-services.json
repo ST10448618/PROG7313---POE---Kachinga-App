@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1078062902826",
+    "project_id": "kachinga-fd332",
+    "storage_bucket": "kachinga-fd332.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1078062902826:android:a30fb9f8b58164be1e5d53",
+        "android_client_info": {
+          "package_name": "com.example.kachingaapp_prog7313poe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkYue-CqD-eB6JttIktwtUJXyEywW5IDE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
