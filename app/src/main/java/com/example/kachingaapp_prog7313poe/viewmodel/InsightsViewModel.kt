@@ -11,6 +11,10 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.compareTo
+import kotlin.div
+import kotlin.text.lowercase
+import kotlin.text.toInt
+import kotlin.times
 
 
 data class CategorySpending(
@@ -144,4 +148,40 @@ class InsightsViewModel(application: Application) : AndroidViewModel(application
                         )
                     }
                 }
-            }
+                // Savings opportunity
+                categoryChanges.maxByOrNull { it.currentMonth }?.let { high ->
+                    val potentialSavings = high.currentMonth * 0.10
+                    if (potentialSavings > 100) {
+                        insights.add(
+                            SpendingInsight(
+                                title = "Savings Opportunity",
+                                description = "Reducing ${high.category.lowercase()} by 10% could save R${"%.0f".format(potentialSavings)}/month.",
+                                icon = "💰",
+                                actionable = true,
+                                potentialSavings = potentialSavings
+                            )
+                        )
+                    }
+                }
+
+                // Use actual income from transactions if no salary set
+                val effectiveIncome = if (salary > 0) salary
+                else currentMonthIncome.sumOf { it.amount }
+
+                val totalExpenses = currentMonthExpenses.sumOf { it.amount }
+                val budgetPercentage = if (effectiveIncome > 0)
+                    (totalExpenses / effectiveIncome * 100).toInt()
+                else 0
+                val onTrack = budgetPercentage < 80
+
+                insights.add(
+                    SpendingInsight(
+                        title = if (onTrack) "On Budget" else "Overspending Alert",
+                        description = if (onTrack)
+                            "You're spending $budgetPercentage% of your income. Great job!"
+                        else
+                            "You're spending $budgetPercentage% of your income. Consider cutting back.",
+                        icon = if (onTrack) "✅" else "⚠️",
+                        actionable = !onTrack
+                    )
+                )
