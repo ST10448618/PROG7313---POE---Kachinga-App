@@ -16,6 +16,9 @@ interface BillDao {
     @Update
     suspend fun updateBill(bill: Bill)
 
+    @Query("SELECT * FROM bills WHERE userId = :userId AND isActive = 1 ORDER BY dueDay ASC")
+    fun getAllBills(userId: Int): Flow<List<Bill>>
+
     @Query("SELECT * FROM bills WHERE userId = :userId AND isActive = 1")
     suspend fun getBillsForMonth(userId: Int): List<Bill>
 
