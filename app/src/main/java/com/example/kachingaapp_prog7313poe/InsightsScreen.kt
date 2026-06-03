@@ -245,7 +245,7 @@ fun InsightsScreen(
 }
 
 @Composable
-fun InsightCard(insight: com.example.prog7313_poe_kachinga.viewmodel.SpendingInsight) {
+fun InsightCard(insight: com.example.kachingaapp_prog7313poe.viewmodel.SpendingInsight) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -299,7 +299,7 @@ fun InsightCard(insight: com.example.prog7313_poe_kachinga.viewmodel.SpendingIns
 }
 
 @Composable
-fun CategoryChangeRow(change: com.example.prog7313_poe_kachinga.viewmodel.CategorySpending) {
+fun CategoryChangeRow(change: com.example.kachingaapp_prog7313poe.viewmodel.CategorySpending) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
