@@ -1,8 +1,6 @@
 package com.example.prog7313_poe_kachinga.navigation
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -11,29 +9,58 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.prog7313_poe_kachinga.*
 import com.example.prog7313_poe_kachinga.viewmodel.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.activity.ComponentActivity
+import com.example.prog7313_poe_kachinga.data.SessionManager
 
 @Composable
 fun NavGraph(navController: NavHostController) {
 
-    val authViewModel: AuthViewModel = viewModel()
-    val transactionViewModel: TransactionViewModel = viewModel()
-    val categoryViewModel: CategoryViewModel = viewModel()
-    val savingsViewModel: SavingsViewModel = viewModel()
-    val achievementsViewModel: AchievementsViewModel = viewModel()
-    val profileViewModel: ProfileViewModel = viewModel()
-    val homeViewModel: HomeViewModel = viewModel()
+    val context = LocalContext.current
+    val activity = context as ComponentActivity
 
-    // Check if already logged in — skip straight to HOME
-    val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
-    val startDestination = if (isLoggedIn) NavRoutes.HOME else NavRoutes.SPLASH
+    val authViewModel: AuthViewModel = viewModel(activity)
+    val transactionViewModel: TransactionViewModel = viewModel(activity)
+    val categoryViewModel: CategoryViewModel = viewModel(activity)
+    val savingsViewModel: SavingsViewModel = viewModel(activity)
+    val achievementsViewModel: AchievementsViewModel = viewModel(activity)
+    val profileViewModel: ProfileViewModel = viewModel(activity)
+    val homeViewModel: HomeViewModel = viewModel(activity)
+    val insightsViewModel: InsightsViewModel = viewModel(activity)
+    val billViewModel: BillViewModel = viewModel(activity)
+
+    val sessionManager = remember { SessionManager(context) }
+    val isLoggedIn by sessionManager.isLoggedIn.collectAsState(initial = false)
+    val userId by sessionManager.userId.collectAsState(initial = -1)
+
+    val onNavigate: (String) -> Unit = { route ->
+        navController.navigate(route) {
+            when (route) {
+                NavRoutes.HOME,
+                NavRoutes.CALENDAR,
+                NavRoutes.SAVINGS,
+                NavRoutes.PROFILE,
+                NavRoutes.BILLS,
+                NavRoutes.INSIGHTS -> {
+                    popUpTo(NavRoutes.HOME) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+                else -> {
+                    launchSingleTop = true
+                }
+            }
+        }
+    }
 
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = NavRoutes.SPLASH
     ) {
         composable(NavRoutes.SPLASH) {
             SplashScreen(onFinished = {
-                navController.navigate(NavRoutes.LAUNCH) {
+                val destination = if (isLoggedIn && userId > 0) NavRoutes.HOME else NavRoutes.LAUNCH
+                navController.navigate(destination) {
                     popUpTo(NavRoutes.SPLASH) { inclusive = true }
                 }
             })
@@ -53,9 +80,7 @@ fun NavGraph(navController: NavHostController) {
                         popUpTo(0) { inclusive = true }
                     }
                 },
-                onSignUpClick = {
-                    navController.navigate(NavRoutes.CREATE_ACCOUNT)
-                },
+                onSignUpClick = { navController.navigate(NavRoutes.CREATE_ACCOUNT) },
                 authViewModel = authViewModel
             )
         }
@@ -71,11 +96,12 @@ fun NavGraph(navController: NavHostController) {
                 authViewModel = authViewModel
             )
         }
+
         composable(NavRoutes.HOME) {
             HomeScreen(
                 transactionViewModel = transactionViewModel,
-                homeViewModel = homeViewModel,
-                onNavigate = { route -> navController.navigate(route) }
+                onNavigate = onNavigate,
+                homeViewModel = homeViewModel
             )
         }
 
@@ -83,7 +109,7 @@ fun NavGraph(navController: NavHostController) {
             TransactionsScreen(
                 onBackClick = { navController.popBackStack() },
                 transactionViewModel = transactionViewModel,
-                onNavigate = { route -> navController.navigate(route) }
+                onNavigate = onNavigate
             )
         }
 
@@ -92,12 +118,7 @@ fun NavGraph(navController: NavHostController) {
                 onBackClick = { navController.popBackStack() },
                 transactionViewModel = transactionViewModel,
                 categoryViewModel = categoryViewModel,
-                onSuccess = {
-                    // Always go back to HOME after adding a transaction
-                    navController.navigate(NavRoutes.HOME) {
-                        popUpTo(NavRoutes.HOME) { inclusive = false }
-                    }
-                }
+                onSuccess = { navController.popBackStack() }
             )
         }
 
@@ -105,7 +126,7 @@ fun NavGraph(navController: NavHostController) {
             CategoriesScreen(
                 onBackClick = { navController.popBackStack() },
                 categoryViewModel = categoryViewModel,
-                onNavigate = { route -> navController.navigate(route) }
+                onNavigate = onNavigate
             )
         }
 
@@ -124,7 +145,7 @@ fun NavGraph(navController: NavHostController) {
                     navController.navigate(NavRoutes.savingsDetail(goal.id))
                 },
                 savingsViewModel = savingsViewModel,
-                onNavigate = { route -> navController.navigate(route) }
+                onNavigate = onNavigate
             )
         }
 
@@ -137,7 +158,7 @@ fun NavGraph(navController: NavHostController) {
                 goalId = goalId,
                 onBackClick = { navController.popBackStack() },
                 savingsViewModel = savingsViewModel,
-                onNavigate = { route -> navController.navigate(route) }
+                onNavigate = onNavigate
             )
         }
 
@@ -152,13 +173,16 @@ fun NavGraph(navController: NavHostController) {
         composable(NavRoutes.CALENDAR) {
             CalendarScreen(
                 onBackClick = { navController.popBackStack() },
-                transactionViewModel = transactionViewModel
+                transactionViewModel = transactionViewModel,
+                onNavigate = onNavigate
             )
         }
+
         composable(NavRoutes.ACHIEVEMENTS) {
             AchievementsScreen(
                 onBackClick = { navController.popBackStack() },
-                achievementsViewModel = achievementsViewModel
+                achievementsViewModel = achievementsViewModel,
+                onNavigate = onNavigate
             )
         }
 
@@ -167,14 +191,39 @@ fun NavGraph(navController: NavHostController) {
                 onBackClick = { navController.popBackStack() },
                 authViewModel = authViewModel,
                 profileViewModel = profileViewModel,
-                onNavigate = { route -> navController.navigate(route) }
+                onNavigate = onNavigate
             )
         }
 
         composable(NavRoutes.CATEGORY_REPORT) {
             CategoryReportScreen(
                 onBackClick = { navController.popBackStack() },
-                transactionViewModel = transactionViewModel
+                transactionViewModel = transactionViewModel,
+                onNavigate = onNavigate
+            )
+        }
+
+        composable(NavRoutes.INSIGHTS) {
+            InsightsScreen(
+                onBackClick = { navController.popBackStack() },
+                insightsViewModel = insightsViewModel,
+                onNavigate = onNavigate
+            )
+        }
+
+        composable(NavRoutes.BILLS) {
+            BillsScreen(
+                onBackClick = { navController.popBackStack() },
+                billViewModel = billViewModel,
+                onNavigate = onNavigate
+            )
+        }
+
+        composable(NavRoutes.ADD_BILL) {
+            AddBillScreen(
+                onBackClick = { navController.popBackStack() },
+                billViewModel = billViewModel,
+                onSuccess = { navController.popBackStack() }
             )
         }
     }

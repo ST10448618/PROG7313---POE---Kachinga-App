@@ -45,11 +45,16 @@ import com.example.prog7313_poe_kachinga.ui.theme.KachingaGreenLight
 import com.example.prog7313_poe_kachinga.ui.theme.TextPrimary
 import com.example.prog7313_poe_kachinga.ui.theme.TextSecondary
 import com.example.prog7313_poe_kachinga.viewmodel.AchievementsViewModel
+import com.example.prog7313_poe_kachinga.navigation.NavRoutes  // ADD THIS
+
 
 @Composable
 fun AchievementsScreen(
     onBackClick: () -> Unit,
-    achievementsViewModel: AchievementsViewModel
+    achievementsViewModel: AchievementsViewModel,
+    currentRoute: String = NavRoutes.ACHIEVEMENTS,  // ADD THIS
+    onNavigate: ((String) -> Unit)? = null  // ADD THIS
+
 ) {
     val achievements by achievementsViewModel.allAchievements.collectAsState()
     val currentLevel by achievementsViewModel.currentLevel.collectAsState()

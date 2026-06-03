@@ -29,11 +29,15 @@ import com.example.prog7313_poe_kachinga.data.entity.AppTransaction
 import com.example.prog7313_poe_kachinga.ui.theme.*
 import com.example.prog7313_poe_kachinga.viewmodel.TransactionViewModel
 import java.util.*
+import com.example.prog7313_poe_kachinga.navigation.NavRoutes  // ADD THIS
+
 
 @Composable
 fun CalendarScreen(
     onBackClick: () -> Unit,
-    transactionViewModel: TransactionViewModel = viewModel()
+    transactionViewModel: TransactionViewModel = viewModel(),
+    onNavigate: ((String) -> Unit)? = null  // ADD THIS
+
 ) {
     val today = remember { Calendar.getInstance() }
     var displayedYear by remember { mutableIntStateOf(today.get(Calendar.YEAR)) }
@@ -75,6 +79,7 @@ fun CalendarScreen(
             cal.get(Calendar.DAY_OF_MONTH)
         }.toSet()
     }
+
     // Chart data for selected day
     val chartData = remember(selectedDayTransactions) {
         buildChartData(selectedDayTransactions)
@@ -215,6 +220,7 @@ fun CalendarScreen(
                                 fontWeight = FontWeight.Bold)
                         }
                     }
+
                     // Day labels
                     Row(
                         modifier = Modifier
@@ -410,6 +416,7 @@ fun CalendarScreen(
                                         startAngle += 180f * segment.fraction
                                     }
                                 }
+
                                 // Labels on arc
                                 Row(
                                     modifier = Modifier
