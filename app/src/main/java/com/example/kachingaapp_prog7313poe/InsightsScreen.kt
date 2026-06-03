@@ -243,3 +243,57 @@ fun InsightsScreen(
         }
     }
 }
+
+@Composable
+fun InsightCard(insight: com.example.prog7313_poe_kachinga.viewmodel.SpendingInsight) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (insight.actionable) Color(0xFFFFF9E6) else Color.White
+        ),
+        border = if (insight.actionable)
+            androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFFD700))
+        else null
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(insight.icon, fontSize = 24.sp)
+                Spacer(modifier = Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        insight.title,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = TextPrimary
+                    )
+                    Text(
+                        insight.description,
+                        fontSize = 12.sp,
+                        color = TextSecondary,
+                        modifier = Modifier.padding(top = 2.dp)
+                    )
+                }
+            }
+            if (insight.actionable && insight.potentialSavings > 0) {
+                Spacer(modifier = Modifier.height(10.dp))
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color(0xFFFFEECC))
+                        .padding(8.dp)
+                ) {
+                    Text(
+                        "Potential savings: R${"%.0f".format(insight.potentialSavings)}/month",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF994C00)
+                    )
+                }
+            }
+        }
+    }
+}
