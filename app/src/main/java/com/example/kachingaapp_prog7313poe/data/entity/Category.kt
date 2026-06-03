@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class Category(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val userId: Int = 0,
+    val userId: String, // Foreign key to the user table now uses string
     val name: String,
     val icon: String,
     val isExpense: Boolean = true,
