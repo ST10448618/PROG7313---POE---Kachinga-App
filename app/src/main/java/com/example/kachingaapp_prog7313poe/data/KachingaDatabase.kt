@@ -2,12 +2,12 @@ package com.example.kachingaapp_prog7313poe.data
 
 import android.content.Context
 import androidx.room.*
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.kachingaapp_prog7313poe.data.dao.*
 import com.example.kachingaapp_prog7313poe.data.entity.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Database(
     entities = [
@@ -15,15 +15,14 @@ import kotlinx.coroutines.launch
         AppTransaction::class,
         Category::class,
         SavingsGoal::class,
-        Achievement::class,
-        Bill::class
+        Achievement::class
     ],
-    version = 5,
+    version = 7, // Increased after db alteration
     exportSchema = false
 )
 abstract class KachingaDatabase : RoomDatabase() {
 
-    //Abstract Functions
+    // Abstract Functions
     abstract fun userDao(): UserDao
     abstract fun transactionDao(): TransactionDao
     abstract fun categoryDao(): CategoryDao
@@ -32,56 +31,64 @@ abstract class KachingaDatabase : RoomDatabase() {
 
     abstract fun billDao(): BillDao
 
+
     companion object {
         @Volatile
-        private var INSTANCE: com.example.kachingaapp_prog7313poe.data.KachingaDatabase? = null
+        private var INSTANCE: KachingaDatabase? = null
 
-        fun getDatabase(context: Context): com.example.kachingaapp_prog7313poe.data.KachingaDatabase {
+        fun getDatabase(context: Context): KachingaDatabase {
             return INSTANCE ?: synchronized(this) {
-                Room.databaseBuilder(
+                val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    com.example.kachingaapp_prog7313poe.data.KachingaDatabase::class.java,
+                    KachingaDatabase::class.java,
                     "kachinga_database"
                 )
                     .fallbackToDestructiveMigration()
-                    .addCallback(object : Callback() {
-                        override fun onCreate(db: SupportSQLiteDatabase) {
-                            super.onCreate(db)
-                            CoroutineScope(Dispatchers.IO).launch {
-                                INSTANCE?.let {
-                                    seedCategories(it.categoryDao())
-                                    seedAchievements(it.achievementDao())
-                                }
-                            }
-                        }
-                    })
                     .build()
-                    .also { INSTANCE = it }
+
+                INSTANCE = instance
+
+                //Runs a guaranteed safety check sequence on an independent background thread
+                CoroutineScope(Dispatchers.IO).launch {
+                    ensureDatabaseSeeded(instance)
+                }
+
+                instance
             }
         }
 
-        //SeedCategories Function
+        private suspend fun ensureDatabaseSeeded(database: KachingaDatabase) {
+            val categoryDao = database.categoryDao()
+            val achievementDao = database.achievementDao()
+
+            //checks if the table layout contains data elements
+            if (categoryDao.getStaticCategoriesCount() == 0) {
+                seedCategories(categoryDao)
+            }
+            if (achievementDao.getStaticAchievementsCount() == 0) {
+                seedAchievements(achievementDao)
+            }
+        }
+
         private suspend fun seedCategories(dao: CategoryDao) {
-            // userId = 0 means shared/default — visible to all users
             listOf(
-                Category(userId = 0, name = "Food",          icon = "🍔", isExpense = true),
-                Category(userId = 0, name = "Transport",     icon = "🚌", isExpense = true),
-                Category(userId = 0, name = "Medicine",      icon = "💊", isExpense = true),
-                Category(userId = 0, name = "Travel",        icon = "✈",  isExpense = true),
-                Category(userId = 0, name = "Property",      icon = "🏠", isExpense = true),
-                Category(userId = 0, name = "Car",           icon = "🚗", isExpense = true),
-                Category(userId = 0, name = "Grocery",       icon = "🛒", isExpense = true),
-                Category(userId = 0, name = "Rent",          icon = "🏢", isExpense = true),
-                Category(userId = 0, name = "Gifts",         icon = "🎁", isExpense = true),
-                Category(userId = 0, name = "Entertainment", icon = "🎬", isExpense = true),
-                Category(userId = 0, name = "Salary",        icon = "💵", isExpense = false),
-                Category(userId = 0, name = "Freelance",     icon = "💻", isExpense = false),
-                Category(userId = 0, name = "Investment",    icon = "📈", isExpense = false),
-                Category(userId = 0, name = "Other Income",  icon = "💰", isExpense = false)
+                Category(userId = "", name = "Food",          icon = "🍔", isExpense = true),
+                Category(userId = "", name = "Transport",     icon = "🚌", isExpense = true),
+                Category(userId = "", name = "Medicine",      icon = "💊", isExpense = true),
+                Category(userId = "", name = "Travel",        icon = "✈",  isExpense = true),
+                Category(userId = "", name = "Property",      icon = "🏠", isExpense = true),
+                Category(userId = "", name = "Car",           icon = "🚗", isExpense = true),
+                Category(userId = "", name = "Grocery",       icon = "🛒", isExpense = true),
+                Category(userId = "", name = "Rent",          icon = "🏢", isExpense = true),
+                Category(userId = "", name = "Gifts",         icon = "🎁", isExpense = true),
+                Category(userId = "", name = "Entertainment", icon = "🎬", isExpense = true),
+                Category(userId = "", name = "Salary",        icon = "💵", isExpense = false),
+                Category(userId = "", name = "Freelance",     icon = "💻", isExpense = false),
+                Category(userId = "", name = "Investment",    icon = "📈", isExpense = false),
+                Category(userId = "", name = "Other Income",  icon = "💰", isExpense = false)
             ).forEach { dao.insertCategory(it) }
         }
 
-        //SeedAchievements Function
         private suspend fun seedAchievements(dao: AchievementDao) {
             listOf(
                 Achievement(name = "First Saver",       description = "Added your first transaction",        icon = "🐷", xpReward = 100),
