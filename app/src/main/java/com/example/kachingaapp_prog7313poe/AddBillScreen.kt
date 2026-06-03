@@ -107,3 +107,40 @@ fun AddBillScreen(
                         Spacer(modifier = Modifier.size(44.dp))
                     }
                 }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(Color.White)
+                        .padding(20.dp)
+                ) {
+                    // Bill name
+                    FormLabel("Bill Name")
+                    OutlinedTextField(
+                        value = billName,
+                        onValueChange = { billName = it },
+                        placeholder = { Text("e.g. Netflix, Rent, Electricity", color = TextHint) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        singleLine = true,
+                        colors = kachingaTextFieldColors()
+                    )
+
+                    // Amount
+                    FormLabel("Amount (R)")
+                    OutlinedTextField(
+                        value = amount,
+                        onValueChange = { amount = it },
+                        placeholder = { Text("0.00", color = TextHint) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                        colors = kachingaTextFieldColors()
+                    )
