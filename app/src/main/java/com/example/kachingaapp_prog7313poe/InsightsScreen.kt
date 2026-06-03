@@ -26,3 +26,73 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kachingaapp_prog7313poe.ui.theme.*
 import com.example.kachingaapp_prog7313poe.viewmodel.InsightsViewModel
 import com.example.kachingaapp_prog7313poe.navigation.NavRoutes
+import com.example.prog7313_poe_kachinga.AnimatedScreen
+import com.example.prog7313_poe_kachinga.ui.theme.KachingaGreen
+
+@Composable
+fun InsightsScreen(
+    onBackClick: () -> Unit,
+    insightsViewModel: InsightsViewModel = viewModel(),
+    onNavigate: ((String) -> Unit)? = null
+) {
+    val state by insightsViewModel.insightState.collectAsState()
+
+    AnimatedScreen {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFF0FAF4))
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(bottom = 90.dp)
+            ) {
+                // Header
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(KachingaGreen)
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 48.dp, bottom = 24.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .size(44.dp)
+                                .clickable { onBackClick() }
+                                .padding(10.dp)
+                        )
+                        Text(
+                            "Smart Insights",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            modifier = Modifier.weight(1f),
+                            textAlign = TextAlign.Center
+                        )
+                        Box(
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(CircleShape)
+                                .background(Color.White.copy(alpha = 0.2f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Filled.Analytics,
+                                contentDescription = "Analytics",
+                                tint = Color.White,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
+                }
+
+                Column(modifier = Modifier.padding(16.dp)) {
