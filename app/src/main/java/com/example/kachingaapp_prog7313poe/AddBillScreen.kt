@@ -63,3 +63,47 @@ fun AddBillScreen(
         }
     }
 
+    AnimatedScreen {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFF0FAF4))
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(bottom = 40.dp)
+            ) {
+                // Header
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(KachingaGreen)
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 48.dp, bottom = 24.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .size(44.dp)
+                                .clickable { onBackClick() }
+                                .padding(10.dp)
+                        )
+                        Text(
+                            "Add Bill Reminder",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            modifier = Modifier.weight(1f),
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.size(44.dp))
+                    }
+                }
