@@ -19,27 +19,27 @@ class TransactionViewModel(application: Application) : AndroidViewModel(applicat
     )
     private val session = SessionManager(application)
 
-    // React to userId changes — when user switches, data refreshes automatically
-    private val userId: StateFlow<Int> = session.userId
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), -1)
+
+    private val userId: StateFlow<String> = session.userId
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
     val allTransactions: StateFlow<List<AppTransaction>> = userId
         .flatMapLatest { id ->
-            if (id > 0) repo.getAllTransactions(id)
+            if (id.isNotBlank()) repo.getAllTransactions(id)
             else flowOf(emptyList())
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val totalIncome: StateFlow<Double> = userId
         .flatMapLatest { id ->
-            if (id > 0) repo.getTotalIncome(id)
+            if (id.isNotBlank()) repo.getTotalIncome(id)
             else flowOf(0.0)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
     val totalExpenses: StateFlow<Double> = userId
         .flatMapLatest { id ->
-            if (id > 0) repo.getTotalExpenses(id)
+            if (id.isNotBlank()) repo.getTotalExpenses(id)
             else flowOf(0.0)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
@@ -72,7 +72,7 @@ class TransactionViewModel(application: Application) : AndroidViewModel(applicat
         }
         viewModelScope.launch(Dispatchers.IO) {
             val currentUserId = session.userId.first()
-            if (currentUserId <= 0) {
+            if (currentUserId.isBlank()) {
                 _uiState.update { it.copy(error = "Please log in again") }
                 return@launch
             }
@@ -111,14 +111,14 @@ class TransactionViewModel(application: Application) : AndroidViewModel(applicat
 
     fun getByDateRange(start: Long, end: Long): Flow<List<AppTransaction>> {
         val currentUserId = userId.value
-        return if (currentUserId > 0)
+        return if (currentUserId.isNotBlank())
             repo.getByDateRange(currentUserId, start, end)
         else flowOf(emptyList())
     }
 
     fun getExpensesByDateRange(start: Long, end: Long): Flow<List<AppTransaction>> {
         val currentUserId = userId.value
-        return if (currentUserId > 0)
+        return if (currentUserId.isNotBlank())
             repo.getExpensesByDateRange(currentUserId, start, end)
         else flowOf(emptyList())
     }
