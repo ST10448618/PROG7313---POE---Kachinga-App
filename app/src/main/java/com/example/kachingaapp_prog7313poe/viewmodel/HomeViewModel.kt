@@ -38,7 +38,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     val financialState: StateFlow<HomeFinancialState> = session.userId
         .flatMapLatest { userId ->
-            if (userId <= 0) return@flatMapLatest flowOf(HomeFinancialState())
+            if (userId.isBlank()) return@flatMapLatest flowOf(HomeFinancialState())
 
             combine(
                 transactionDao.getAllTransactions(userId),

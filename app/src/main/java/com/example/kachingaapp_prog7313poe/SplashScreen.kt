@@ -1,4 +1,4 @@
-package com.example.prog7313_poe_kachinga
+package com.example.kachingaapp_prog7313poe
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,8 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.prog7313_poe_kachinga.ui.theme.KachingaGreen
-import com.example.prog7313_poe_kachinga.ui.theme.KachingaGreenDark
+import com.example.kachingaapp_prog7313poe.ui.theme.KachingaGreen
+import com.example.kachingaapp_prog7313poe.ui.theme.KachingaGreenDark
 import kotlinx.coroutines.delay
 
 @Composable

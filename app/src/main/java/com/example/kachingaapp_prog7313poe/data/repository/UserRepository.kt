@@ -3,59 +3,48 @@ package com.example.kachingaapp_prog7313poe.data.repository
 import com.example.kachingaapp_prog7313poe.data.dao.UserDao
 import com.example.kachingaapp_prog7313poe.data.entity.User
 import kotlinx.coroutines.flow.Flow
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.tasks.await
 
 class UserRepository(private val dao: UserDao) {
 
     //Register Function Created
-    suspend fun register(user: User): Result<Unit> {
+    private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+
+    //Firebase handles registration, then we save the metadata locally
+    suspend fun register(fullName: String, email: String, password: String): Result<User> {
         return try {
-            val existing = dao.getUserByEmail(user.email.trim())
-            if (existing != null) {
-                return Result.failure(Exception("Email already registered"))
-            }
-            dao.insertUser(user)
-            Result.success(Unit)
+            val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+            val firebaseUser = authResult.user ?: throw Exception("Firebase user creation failed")
+
+            val newUser = User(
+                id = firebaseUser.uid, //Connects Room record directly to Firebase UID
+                fullName = fullName,
+                email = email
+            )
+            dao.insertUser(newUser)
+            Result.success(newUser)
         } catch (e: Exception) {
-            Result.failure(Exception("Registration failed: ${e.message}"))
+            Result.failure(Exception(e.localizedMessage ?: "Registration failed"))
         }
     }
 
     //Login Function Created
     suspend fun login(email: String, password: String): Result<User> {
         return try {
-            val trimmedEmail = email.trim()
-            val trimmedPassword = password.trim()
+            val authResult = firebaseAuth.signInWithEmailAndPassword(email, password).await()
+            val firebaseUser = authResult.user ?: throw Exception("User session not found")
 
-            // Try exact match first
-            var user = dao.login(trimmedEmail, trimmedPassword)
+            val localUser = dao.getUserByIdImmediate(firebaseUser.uid)
+                ?: throw Exception("User profile missing from local database")
 
-            // If null try with lowercase email
-            if (user == null) {
-                user = dao.login(trimmedEmail.lowercase(), trimmedPassword)
-            }
-
-            // If still null fetch by email and check password manually
-            // This handles any encoding/collation differences on device
-            if (user == null) {
-                val foundByEmail = dao.getUserByEmailOnly(trimmedEmail)
-                    ?: dao.getUserByEmailOnly(trimmedEmail.lowercase())
-
-                if (foundByEmail != null && foundByEmail.password == trimmedPassword) {
-                    user = foundByEmail
-                }
-            }
-
-            if (user != null) {
-                Result.success(user)
-            } else {
-                Result.failure(Exception("Invalid email or password"))
-            }
+            Result.success(localUser)
         } catch (e: Exception) {
-            Result.failure(Exception("Login error: ${e.message}"))
+            Result.failure(Exception(e.localizedMessage ?: "Invalid email or password"))
         }
     }
 
-    fun getUserById(id: Int): Flow<User?> = dao.getUserById(id)
+    fun getUserById(id: String): Flow<User?> = dao.getUserById(id)
 
     suspend fun updateUser(user: User) = dao.updateUser(user)
 
@@ -66,5 +55,9 @@ class UserRepository(private val dao: UserDao) {
         } catch (e: Exception) {
             null
         }
+    }
+
+    fun firebaseSignOut() {
+        firebaseAuth.signOut()
     }
 }

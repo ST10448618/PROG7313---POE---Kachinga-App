@@ -8,20 +8,21 @@ import kotlinx.coroutines.flow.Flow
 class TransactionRepository(private val dao: TransactionDao) {
 
     //Transaction Functions created
-    fun getAllTransactions(userId: Int): Flow<List<AppTransaction>> =
+    //UserId now uses string for firebase integration
+    fun getAllTransactions(userId: String): Flow<List<AppTransaction>> =
         dao.getAllTransactions(userId)
 
-    fun getTotalIncome(userId: Int): Flow<Double> = dao.getTotalIncome(userId)
+    fun getTotalIncome(userId: String): Flow<Double> = dao.getTotalIncome(userId)
 
-    fun getTotalExpenses(userId: Int): Flow<Double> = dao.getTotalExpenses(userId)
+    fun getTotalExpenses(userId: String): Flow<Double> = dao.getTotalExpenses(userId)
 
-    fun getByCategory(userId: Int, categoryId: Int): Flow<List<AppTransaction>> =
+    fun getByCategory(userId: String, categoryId: Int): Flow<List<AppTransaction>> =
         dao.getTransactionsByCategory(userId, categoryId)
 
-    fun getByDateRange(userId: Int, start: Long, end: Long): Flow<List<AppTransaction>> =
+    fun getByDateRange(userId: String, start: Long, end: Long): Flow<List<AppTransaction>> =
         dao.getTransactionsByDateRange(userId, start, end)
 
-    fun getExpensesByDateRange(userId: Int, start: Long, end: Long): Flow<List<AppTransaction>> =
+    fun getExpensesByDateRange(userId: String, start: Long, end: Long): Flow<List<AppTransaction>> =
         dao.getExpensesByDateRange(userId, start, end)
 
     //Insert Function created

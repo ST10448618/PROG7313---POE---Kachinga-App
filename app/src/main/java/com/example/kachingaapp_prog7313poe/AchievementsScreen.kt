@@ -1,4 +1,4 @@
-package com.example.prog7313_poe_kachinga
+package com.example.kachingaapp_prog7313poe
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -39,17 +39,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.prog7313_poe_kachinga.ui.theme.BounceIn
-import com.example.prog7313_poe_kachinga.ui.theme.KachingaGreen
-import com.example.prog7313_poe_kachinga.ui.theme.KachingaGreenLight
-import com.example.prog7313_poe_kachinga.ui.theme.TextPrimary
-import com.example.prog7313_poe_kachinga.ui.theme.TextSecondary
-import com.example.prog7313_poe_kachinga.viewmodel.AchievementsViewModel
+import com.example.kachingaapp_prog7313poe.ui.theme.BounceIn
+import com.example.kachingaapp_prog7313poe.ui.theme.KachingaGreen
+import com.example.kachingaapp_prog7313poe.ui.theme.KachingaGreenLight
+import com.example.kachingaapp_prog7313poe.ui.theme.TextPrimary
+import com.example.kachingaapp_prog7313poe.ui.theme.TextSecondary
+import com.example.kachingaapp_prog7313poe.viewmodel.AchievementsViewModel
+import com.example.kachingaapp_prog7313poe.navigation.NavRoutes  // ADD THIS
+
 
 @Composable
 fun AchievementsScreen(
     onBackClick: () -> Unit,
-    achievementsViewModel: AchievementsViewModel
+    achievementsViewModel: AchievementsViewModel,
+    currentRoute: String = NavRoutes.ACHIEVEMENTS,  // ADD THIS
+    onNavigate: ((String) -> Unit)? = null  // ADD THIS
+
 ) {
     val achievements by achievementsViewModel.allAchievements.collectAsState()
     val currentLevel by achievementsViewModel.currentLevel.collectAsState()

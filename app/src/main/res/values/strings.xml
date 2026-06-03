@@ -1,3 +1,37 @@
 <resources>
-    <string name="app_name">Kachinga App - PROG7313 POE</string>
+    //User friendly named strings for the application.
+    <string name="app_name">Kachinga</string>
+    <string name="log_in">Log In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="welcome">Welcome</string>
+    <string name="username_or_email">Username or Email</string>
+    <string name="password">Password</string>
+    <string name="use_fingerprint">Use Fingerprint to Access</string>
+    <string name="dont_have_account">Don\'t have an account? Sign Up</string>
+    <string name="create_account">Create Account</string>
+    <string name="full_name">Full Name</string>
+    <string name="email">Email</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="date_of_birth">Date Of Birth</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="terms_agree">By continuing, you agree to our Terms and Privacy Policy</string>
+    <string name="hi_welcome_back">Hi, Welcome Back!</string>
+    <string name="total_balance">Total Balance</string>
+    <string name="income">Income</string>
+    <string name="expense">Expense</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_stats">Stats</string>
+    <string name="nav_add">Add</string>
+    <string name="nav_savings">Savings</string>
+    <string name="nav_profile">Profile</string>
+    <string name="categories">Categories</string>
+    <string name="goals">Goals</string>
+    <string name="add_savings">Add Savings</string>
+    <string name="transactions">Transactions</string>
+    <string name="calendar">Calendar</string>
+    <string name="achievements">Achievements</string>
 </resources>

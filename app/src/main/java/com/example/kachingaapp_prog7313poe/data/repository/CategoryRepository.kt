@@ -7,12 +7,13 @@ import kotlinx.coroutines.flow.Flow
 class CategoryRepository(private val dao: CategoryDao) {
 
     //Functions for Categories
-    fun getAll(userId: Int): Flow<List<Category>> = dao.getAllCategories(userId)
+    // UserId now uses string for firebase integration
+    fun getAll(userId: String): Flow<List<Category>> = dao.getAllCategories(userId)
 
-    fun getExpenseCategories(userId: Int): Flow<List<Category>> =
+    fun getExpenseCategories(userId: String): Flow<List<Category>> =
         dao.getCategoriesByType(userId, true)
 
-    fun getIncomeCategories(userId: Int): Flow<List<Category>> =
+    fun getIncomeCategories(userId: String): Flow<List<Category>> =
         dao.getCategoriesByType(userId, false)
 
     //Insert Function

@@ -6,9 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kachingaapp_prog7313poe.data.KachingaDatabase
 import com.example.kachingaapp_prog7313poe.data.SessionManager
-import com.example.kachingaapp_prog7313poe.data.entity.User
 import com.example.kachingaapp_prog7313poe.data.repository.UserRepository
-
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,7 +18,7 @@ import kotlinx.coroutines.launch
 
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
-     private val repo = UserRepository(
+    private val repo = UserRepository(
         KachingaDatabase.getDatabase(application).userDao()
     )
     private val session = SessionManager(application)
@@ -31,14 +29,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
 
-    // Separate state just for navigation — avoids calling lambda from bg thread
     private val _navigateToHome = MutableStateFlow(false)
     val navigateToHome: StateFlow<Boolean> = _navigateToHome.asStateFlow()
 
     private val _navigateAfterRegister = MutableStateFlow(false)
     val navigateAfterRegister: StateFlow<Boolean> = _navigateAfterRegister.asStateFlow()
-
-
 
     fun login(email: String, password: String) {
         if (email.isBlank()) {
@@ -51,36 +46,29 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
         if (_uiState.value.isLoading) return
 
-        // Run entirely on IO — never call UI lambda from background
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
                 val result = repo.login(email.trim(), password.trim())
                 result.fold(
                     onSuccess = { user ->
-                        Log.d("AuthViewModel", "Login success for: ${user.email}")
+                        Log.d("AuthViewModel", "Firebase Login success for: ${user.email}")
+                        // Make sure your SessionManager accepts user.id as a String now!
                         session.saveSession(user.id, user.fullName, user.email)
-                        // Signal navigation via StateFlow — safe from any thread
                         _uiState.update { it.copy(isLoading = false, error = null) }
                         _navigateToHome.update { true }
                     },
                     onFailure = { e ->
                         Log.e("AuthViewModel", "Login failed: ${e.message}")
                         _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                error = e.message ?: "Invalid email or password"
-                            )
+                            it.copy(isLoading = false, error = e.message ?: "Authentication failed")
                         }
                     }
                 )
             } catch (e: Exception) {
                 Log.e("AuthViewModel", "Login exception: ${e.message}", e)
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "Login failed. Please try again."
-                    )
+                    it.copy(isLoading = false, error = "Login failed. Please try again.")
                 }
             }
         }
@@ -115,73 +103,51 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
+                // Pass plaintext values down to Firebase Auth
                 val result = repo.register(
-                    User(
-                        fullName = fullName.trim(),
-                        email = email.trim(),
-                        password = password.trim()
-                    )
+                    fullName = fullName.trim(),
+                    email = email.trim(),
+                    password = password.trim()
                 )
                 result.fold(
-                    onSuccess = {
-                        val user = repo.getUserByEmail(email.trim())
-                        if (user != null) {
-                            session.saveSession(user.id, user.fullName, user.email)
-                        }
+                    onSuccess = { user ->
+                        session.saveSession(user.id, user.fullName, user.email)
                         _uiState.update { it.copy(isLoading = false, error = null) }
                         _navigateAfterRegister.update { true }
                     },
                     onFailure = { e ->
                         _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                error = e.message ?: "Registration failed"
-                            )
+                            it.copy(isLoading = false, error = e.message ?: "Registration failed")
                         }
                     }
                 )
             } catch (e: Exception) {
                 Log.e("AuthViewModel", "Register exception: ${e.message}", e)
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "Registration failed. Please try again."
-                    )
+                    it.copy(isLoading = false, error = "Registration failed. Please try again.")
                 }
             }
         }
     }
 
-
     fun logout(onComplete: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                repo.firebaseSignOut()
                 session.clearSession()
             } catch (e: Exception) {
                 Log.e("AuthViewModel", "Logout exception: ${e.message}")
             }
-            // Post to main
             viewModelScope.launch(Dispatchers.Main) {
                 onComplete()
             }
         }
     }
 
-    fun onNavigatedToHome() {
-        _navigateToHome.update { false }
-    }
-
-    fun onNavigatedAfterRegister() {
-        _navigateAfterRegister.update { false }
-    }
-
-    fun clearError() {
-        _uiState.update { it.copy(error = null) }
-    }
-
+    fun onNavigatedToHome() { _navigateToHome.update { false } }
+    fun onNavigatedAfterRegister() { _navigateAfterRegister.update { false } }
+    fun clearError() { _uiState.update { it.copy(error = null) } }
 }
-
-
 
 data class AuthUiState(
     val isLoading: Boolean = false,

@@ -1,4 +1,4 @@
-package com.example.prog7313_poe_kachinga
+package com.example.kachingaapp_prog7313poe
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -25,15 +25,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.prog7313_poe_kachinga.data.entity.AppTransaction
-import com.example.prog7313_poe_kachinga.ui.theme.*
-import com.example.prog7313_poe_kachinga.viewmodel.TransactionViewModel
+import com.example.kachingaapp_prog7313poe.data.entity.AppTransaction
+import com.example.kachingaapp_prog7313poe.ui.theme.*
+import com.example.kachingaapp_prog7313poe.viewmodel.TransactionViewModel
 import java.util.*
+import com.example.kachingaapp_prog7313poe.navigation.NavRoutes
+
 
 @Composable
 fun CalendarScreen(
     onBackClick: () -> Unit,
-    transactionViewModel: TransactionViewModel = viewModel()
+    transactionViewModel: TransactionViewModel = viewModel(),
+    onNavigate: ((String) -> Unit)? = null  // ADD THIS
+
 ) {
     val today = remember { Calendar.getInstance() }
     var displayedYear by remember { mutableIntStateOf(today.get(Calendar.YEAR)) }
@@ -75,6 +79,7 @@ fun CalendarScreen(
             cal.get(Calendar.DAY_OF_MONTH)
         }.toSet()
     }
+
     // Chart data for selected day
     val chartData = remember(selectedDayTransactions) {
         buildChartData(selectedDayTransactions)
@@ -215,6 +220,7 @@ fun CalendarScreen(
                                 fontWeight = FontWeight.Bold)
                         }
                     }
+
                     // Day labels
                     Row(
                         modifier = Modifier
@@ -410,6 +416,7 @@ fun CalendarScreen(
                                         startAngle += 180f * segment.fraction
                                     }
                                 }
+
                                 // Labels on arc
                                 Row(
                                     modifier = Modifier
