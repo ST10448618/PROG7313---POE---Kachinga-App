@@ -15,9 +15,10 @@ import kotlinx.coroutines.launch
         AppTransaction::class,
         Category::class,
         SavingsGoal::class,
-        Achievement::class
+        Achievement::class,
+        Bill::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 abstract class KachingaDatabase : RoomDatabase() {
@@ -28,6 +29,8 @@ abstract class KachingaDatabase : RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
     abstract fun savingsGoalDao(): SavingsGoalDao
     abstract fun achievementDao(): AchievementDao
+
+    abstract fun billDao(): BillDao
 
     companion object {
         @Volatile
