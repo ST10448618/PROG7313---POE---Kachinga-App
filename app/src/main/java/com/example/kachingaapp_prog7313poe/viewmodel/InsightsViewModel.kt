@@ -185,3 +185,50 @@ class InsightsViewModel(application: Application) : AndroidViewModel(application
                         actionable = !onTrack
                     )
                 )
+// Savings goal progress
+                val savingsAmount = effectiveIncome * (savingsTarget / 100.0)
+                val monthlyBalance = effectiveIncome - totalExpenses
+                val savingsProgress = when {
+                    effectiveIncome <= 0 -> 0
+                    savingsAmount <= 0 -> 0
+                    monthlyBalance <= 0 -> 0
+                    else -> ((totalExpenses / effectiveIncome) * 100).toInt().coerceIn(0, 100)
+                }
+
+                if (savingsProgress >= 100) {
+                    insights.add(
+                        SpendingInsight(
+                            title = "Savings Goal Hit! 🎉",
+                            description = "You've reached your monthly savings target. Excellent!",
+                            icon = "🎉"
+                        )
+                    )
+                }
+
+                // Show summary if no transactions yet
+                if (currentMonthExpenses.isEmpty() && currentMonthIncome.isEmpty()) {
+                    insights.clear()
+                    insights.add(
+                        SpendingInsight(
+                            title = "No Data Yet",
+                            description = "Add transactions to start seeing your spending insights.",
+                            icon = "🔍"
+                        )
+                    )
+                }
+
+                _insightState.update {
+                    it.copy(
+                        categoryChanges = categoryChanges,
+                        insights = insights.take(4),
+                        savingsGoalProgress = savingsProgress,
+                        onTrack = onTrack,
+                        isLoading = false
+                    )
+                }
+
+            } catch (e: Exception) {
+                _insightState.update { it.copy(isLoading = false) }
+            }
+        }
+    }
