@@ -14,6 +14,8 @@ interface AchievementDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAchievement(achievement: Achievement)
+    @Query("SELECT COUNT(*) FROM achievements")
+    suspend fun getStaticAchievementsCount(): Int
 
     @Update
     suspend fun updateAchievement(achievement: Achievement)

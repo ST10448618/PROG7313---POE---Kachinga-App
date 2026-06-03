@@ -1,4 +1,4 @@
-package com.example.prog7313_poe_kachinga
+package com.example.kachingaapp_prog7313poe
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,8 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.prog7313_poe_kachinga.ui.theme.*
-import com.example.prog7313_poe_kachinga.viewmodel.BillViewModel
+import com.example.kachingaapp_prog7313poe.ui.theme.*
+import com.example.kachingaapp_prog7313poe.viewmodel.BillViewModel
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore

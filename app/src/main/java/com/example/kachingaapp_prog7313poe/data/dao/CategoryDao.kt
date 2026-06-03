@@ -16,14 +16,14 @@ interface CategoryDao {
     @Update
     suspend fun updateCategory(category: Category)
 
-    @Query("SELECT * FROM categories WHERE userId = :userId OR userId = 0 ORDER BY name ASC")
-    fun getAllCategories(userId: Int): Flow<List<Category>>
+    @Query("SELECT * FROM categories WHERE userId = :userId OR userId = '' ORDER BY name ASC")
+    fun getAllCategories(userId: String): Flow<List<Category>>
 
-    @Query("SELECT * FROM categories WHERE (userId = :userId OR userId = 0) AND isExpense = :isExpense ORDER BY name ASC")
-    fun getCategoriesByType(userId: Int, isExpense: Boolean): Flow<List<Category>>
+    @Query("SELECT * FROM categories WHERE (userId = :userId OR userId = '') AND isExpense = :isExpense ORDER BY name ASC")
+    fun getCategoriesByType(userId: String, isExpense: Boolean): Flow<List<Category>>
 
     @Query("SELECT COUNT(*) FROM categories WHERE userId = :userId")
-    suspend fun getUserCategoryCount(userId: Int): Int
+    suspend fun getUserCategoryCount(userId: String): Int
 
     @Query("SELECT COUNT(*) FROM categories")
     suspend fun getCategoryCount(): Int

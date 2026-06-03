@@ -43,7 +43,8 @@ class AchievementsViewModel(application: Application) : AndroidViewModel(applica
     init {
         viewModelScope.launch {
             session.userId.collect { userId ->
-                if (userId > 0) {
+                // CHANGED: Numeric validation updated to check for an alphanumeric string
+                if (userId.isNotBlank()) {
                     transactionDao.getAllTransactions(userId).collect {
                         checkAndAwardAchievements()
                     }
@@ -52,7 +53,8 @@ class AchievementsViewModel(application: Application) : AndroidViewModel(applica
         }
         viewModelScope.launch {
             session.userId.collect { userId ->
-                if (userId > 0) {
+                //Numeric validation updated to check for an alphanumeric string
+                if (userId.isNotBlank()) {
                     savingsDao.getAllGoals(userId).collect {
                         checkAndAwardAchievements()
                     }
@@ -66,7 +68,8 @@ class AchievementsViewModel(application: Application) : AndroidViewModel(applica
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val userId = session.userId.first()
-                if (userId <= 0) return@launch
+                //Early return rule updated to catch unauthenticated empty string sessions
+                if (userId.isBlank()) return@launch
 
                 val transactions = transactionDao.getAllTransactions(userId).first()
                 val goals = savingsDao.getAllGoals(userId).first()
@@ -105,8 +108,8 @@ class AchievementsViewModel(application: Application) : AndroidViewModel(applica
 
                 if (salary > 0 && savingsPct > 0) dao.awardAchievement("Profile Pro")
 
-                // Custom categories = those with userId > 0
-                if (categories.count { it.userId > 0 } >= 1)
+                //Custom categories are now identified by matching the user's specific text UID
+                if (categories.count { it.userId == userId } >= 1)
                     dao.awardAchievement("Category Creator")
 
                 if (salary > 0) {
@@ -129,5 +132,4 @@ class AchievementsViewModel(application: Application) : AndroidViewModel(applica
             }
         }
     }
-
 }

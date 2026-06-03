@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class AppTransaction(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val userId: Int = 0,
+    val userId: String, // Foreign key to the user table now uses string
     val title: String,
     val description: String = "",
     val amount: Double,

@@ -8,9 +8,9 @@ import kotlin.compareTo
 class SavingsRepository(private val dao: SavingsGoalDao) {
 
     //Functions for Savings
-    fun getAll(userId: Int): Flow<List<SavingsGoal>> = dao.getAllGoals(userId)
+    fun getAll(userId: String): Flow<List<SavingsGoal>> = dao.getAllGoals(userId)
 
-    fun getById(id: Int, userId: Int): Flow<SavingsGoal?> = dao.getGoalById(id, userId)
+    fun getById(id: Int, userId: String): Flow<SavingsGoal?> = dao.getGoalById(id, userId)
 
     //Insert Savings Function
     suspend fun insert(goal: SavingsGoal): Result<Unit> {
@@ -27,7 +27,7 @@ class SavingsRepository(private val dao: SavingsGoalDao) {
     }
 
     //Deposit Savings Function
-    suspend fun deposit(goalId: Int, userId: Int, amount: Double): Result<Unit> {
+    suspend fun deposit(goalId: Int, userId: String, amount: Double): Result<Unit> {
         return try {
             if (amount <= 0)
                 return Result.failure(Exception("Deposit must be greater than 0"))

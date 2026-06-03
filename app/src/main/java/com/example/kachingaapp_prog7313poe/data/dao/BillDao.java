@@ -17,14 +17,14 @@ interface BillDao {
     suspend fun updateBill(bill: Bill)
 
     @Query("SELECT * FROM bills WHERE userId = :userId AND isActive = 1 ORDER BY dueDay ASC")
-    fun getAllBills(userId: Int): Flow<List<Bill>>
+    fun getAllBills(userId: String): Flow<List<Bill>>
 
     @Query("SELECT * FROM bills WHERE userId = :userId AND isActive = 1")
-    suspend fun getBillsForMonth(userId: Int): List<Bill>
+    suspend fun getBillsForMonth(userId: String): List<Bill>
 
     @Query("UPDATE bills SET isActive = 0 WHERE id = :billId")
     suspend fun deactivateBill(billId: Int)
 
     @Query("SELECT COUNT(*) FROM bills WHERE userId = :userId AND isActive = 1")
-    suspend fun getBillCount(userId: Int): Int
+    suspend fun getBillCount(userId: String): Int
 }

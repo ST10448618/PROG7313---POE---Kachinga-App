@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class Bill(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val userId: Int = 0,
+    val userId: String, // Foreign key to the user table now uses string
     val name: String,
     val amount: Double,
     val dueDay: Int, // Day of month (1-31)

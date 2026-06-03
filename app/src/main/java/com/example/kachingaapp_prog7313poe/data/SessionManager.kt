@@ -14,7 +14,8 @@ class SessionManager(private val context: Context) {
 
     //Values Added
     companion object {
-        val USER_ID = intPreferencesKey("user_id")
+        //Shifted from intPreferencesKey to stringPreferencesKey to accommodate Firebase UIDs
+        val USER_ID = stringPreferencesKey("user_id")
         val USER_NAME = stringPreferencesKey("user_name")
         val USER_EMAIL = stringPreferencesKey("user_email")
         val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
@@ -32,9 +33,10 @@ class SessionManager(private val context: Context) {
                 ?: false
         }
 
-    val userId: Flow<Int> = context.dataStore.data
+    //Flow type changed from Int to String, falling back to empty string instead of -1
+    val userId: Flow<String> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
-        .map { it[USER_ID] ?: -1 }
+        .map { it[USER_ID] ?: "" }
 
     val userName: Flow<String> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
@@ -83,8 +85,9 @@ class SessionManager(private val context: Context) {
                 ?: 0.0
         }
 
-    //Save the Session
-    suspend fun saveSession(userId: Int, userName: String, userEmail: String) {
+    // Save the Session
+    //Parameter userId converted from Int to String
+    suspend fun saveSession(userId: String, userName: String, userEmail: String) {
         try {
             context.dataStore.edit { prefs ->
                 prefs[USER_ID] =

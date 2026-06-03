@@ -6,8 +6,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlin.compareTo
 
 class BillRepository(private val dao: BillDao) {
-
-    fun getAllBills(userId: Int): Flow<List<Bill>> = dao.getAllBills(userId)
+    // Get all bills for a user
+    // UserId now uses string for firebase integration
+    fun getAllBills(userId: String): Flow<List<Bill>> = dao.getAllBills(userId)
 
     suspend fun insert(bill: Bill): Result<Unit> {
         return try {
@@ -30,5 +31,5 @@ class BillRepository(private val dao: BillDao) {
 
     suspend fun deactivate(billId: Int) = dao.deactivateBill(billId)
 
-    suspend fun getBillsForMonth(userId: Int): List<Bill> = dao.getBillsForMonth(userId)
+    suspend fun getBillsForMonth(userId: String): List<Bill> = dao.getBillsForMonth(userId)
 }

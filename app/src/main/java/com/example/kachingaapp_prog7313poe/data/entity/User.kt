@@ -5,11 +5,11 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "users")
 data class User(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey //No longer auto-generated as firebase uses UUID
+    val id: String,
     val fullName: String,
     val email: String,
-    val password: String,
+    //Password removed as it is now stored in firebase
     val monthlyIncome: Double = 0.0,
     val currency: String = "ZAR (R)",
     val minMonthlyGoal: Double = 0.0,
