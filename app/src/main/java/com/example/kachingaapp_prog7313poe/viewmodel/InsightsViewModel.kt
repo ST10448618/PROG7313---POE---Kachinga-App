@@ -232,3 +232,32 @@ class InsightsViewModel(application: Application) : AndroidViewModel(application
             }
         }
     }
+    private fun calculateCategoryChanges(
+        currentMonth: List<com.example.prog7313_poe_kachinga.data.entity.AppTransaction>,
+        lastMonth: List<com.example.prog7313_poe_kachinga.data.entity.AppTransaction>
+    ): List<com.example.prog7313_poe_kachinga.viewmodel.CategorySpending> {
+        val currentGrouped = currentMonth.groupBy { it.categoryName }
+            .mapValues { it.value.sumOf { tx -> tx.amount } }
+        val lastGrouped = lastMonth.groupBy { it.categoryName }
+            .mapValues { it.value.sumOf { tx -> tx.amount } }
+
+        val allCategories = (currentGrouped.keys + lastGrouped.keys).distinct()
+
+        return allCategories.map { cat ->
+            val curr = currentGrouped[cat] ?: 0.0
+            val last = lastGrouped[cat] ?: 0.0
+            val change = when {
+                last > 0 -> ((curr - last) / last * 100).toFloat()
+                curr > 0 -> 100f
+                else -> 0f
+            }
+            val trend = when {
+                change > 10 -> "UP"
+                change < -10 -> "DOWN"
+                else -> "STABLE"
+            }
+            CategorySpending(cat, curr, last, change, trend)
+        }.filter { it.currentMonth > 0 || it.lastMonth > 0 }
+            .sortedByDescending { kotlin.math.abs(it.percentChange) }
+    }
+}
