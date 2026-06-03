@@ -1,4 +1,4 @@
-package com.example.prog7313_poe_kachinga
+package com.example.kachingaapp_prog7313poe
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,14 +21,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.prog7313_poe_kachinga.data.entity.AppTransaction
-import com.example.prog7313_poe_kachinga.navigation.NavRoutes
-import com.example.prog7313_poe_kachinga.ui.theme.*
-import com.example.prog7313_poe_kachinga.viewmodel.HomeViewModel
-import com.example.prog7313_poe_kachinga.viewmodel.TransactionViewModel
+import com.example.kachingaapp_prog7313poe.data.entity.AppTransaction
+import com.example.kachingaapp_prog7313poe.navigation.NavRoutes
+import com.example.kachingaapp_prog7313poe.ui.theme.*
+import com.example.kachingaapp_prog7313poe.viewmodel.HomeViewModel
+import com.example.kachingaapp_prog7313poe.viewmodel.TransactionViewModel
 import java.text.SimpleDateFormat
 import java.util.*
-import com.example.prog7313_poe_kachinga.viewmodel.TimeFilter
+import com.example.kachingaapp_prog7313poe.viewmodel.TimeFilter
 
 fun formatAmount(amount: Double): String {
     return "%.2f".format(amount).replace(',', '.')

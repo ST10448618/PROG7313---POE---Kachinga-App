@@ -1,4 +1,4 @@
-package com.example.prog7313_poe_kachinga
+package com.example.kachingaapp_prog7313poe
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,8 +18,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.prog7313_poe_kachinga.ui.theme.KachingaGreen
-import com.example.prog7313_poe_kachinga.ui.theme.KachingaGreenDark
+import com.example.kachingaapp_prog7313poe.ui.theme.KachingaGreen
+import com.example.kachingaapp_prog7313poe.ui.theme.KachingaGreenDark
 
 @Composable
 fun LaunchScreen(

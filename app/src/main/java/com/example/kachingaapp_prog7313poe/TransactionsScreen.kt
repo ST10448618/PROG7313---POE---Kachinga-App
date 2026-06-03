@@ -1,4 +1,4 @@
-package com.example.prog7313_poe_kachinga
+package com.example.kachingaapp_prog7313poe
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -25,10 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
-import com.example.prog7313_poe_kachinga.data.entity.AppTransaction
-import com.example.prog7313_poe_kachinga.navigation.NavRoutes
-import com.example.prog7313_poe_kachinga.ui.theme.*
-import com.example.prog7313_poe_kachinga.viewmodel.TransactionViewModel
+import com.example.kachingaapp_prog7313poe.data.entity.AppTransaction
+import com.example.kachingaapp_prog7313poe.navigation.NavRoutes
+import com.example.kachingaapp_prog7313poe.ui.theme.*
+import com.example.kachingaapp_prog7313poe.viewmodel.TransactionViewModel
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -398,7 +398,7 @@ fun FixedSwipeToDelete(
         enableDismissFromStartToEnd = false,
         enableDismissFromEndToStart = true,
         backgroundContent = {
-            // Fixed: background only shows on the right side, doesn't fill the whole row content
+            //background only shows on the right side, doesn't fill the whole row content
             Box(
                 modifier = Modifier
                     .fillMaxSize()

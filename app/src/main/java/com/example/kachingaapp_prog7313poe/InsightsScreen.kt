@@ -26,14 +26,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kachingaapp_prog7313poe.ui.theme.*
 import com.example.kachingaapp_prog7313poe.viewmodel.InsightsViewModel
 import com.example.kachingaapp_prog7313poe.navigation.NavRoutes
-import com.example.prog7313_poe_kachinga.AnimatedScreen
-import com.example.prog7313_poe_kachinga.BottomNavBar
-import com.example.prog7313_poe_kachinga.ui.theme.Divider
-import com.example.prog7313_poe_kachinga.ui.theme.KachingaGreen
-import com.example.prog7313_poe_kachinga.ui.theme.KachingaGreenLight
-import com.example.prog7313_poe_kachinga.ui.theme.KachingaRed
-import com.example.prog7313_poe_kachinga.ui.theme.TextPrimary
-import com.example.prog7313_poe_kachinga.ui.theme.TextSecondary
+import com.example.kachingaapp_prog7313poe.AnimatedScreen
+import com.example.kachingaapp_prog7313poe.BottomNavBar
+import com.example.kachingaapp_prog7313poe.ui.theme.Divider
+import com.example.kachingaapp_prog7313poe.ui.theme.KachingaGreen
+import com.example.kachingaapp_prog7313poe.ui.theme.KachingaGreenLight
+import com.example.kachingaapp_prog7313poe.ui.theme.KachingaRed
+import com.example.kachingaapp_prog7313poe.ui.theme.TextPrimary
+import com.example.kachingaapp_prog7313poe.ui.theme.TextSecondary
 
 @Composable
 fun InsightsScreen(
