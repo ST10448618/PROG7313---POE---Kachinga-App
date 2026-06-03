@@ -1,4 +1,4 @@
-package com.example.kachingaapp_prog7313poe.data.entity;
+package com.example.kachingaapp_prog7313poe.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -7,11 +7,11 @@ import androidx.room.PrimaryKey
 data class Bill(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val userId: String, // Foreign key to the user table now uses string
+    val userId: Int = 0,
     val name: String,
     val amount: Double,
-    val dueDay: Int, // Day of month (1-31)
-    val category: String, // "Rent", "Utilities", "Subscription", etc.
+    val dueDay: Int,
+    val category: String,
     val icon: String,
     val isActive: Boolean = true,
     val createdAt: Long = System.currentTimeMillis()
