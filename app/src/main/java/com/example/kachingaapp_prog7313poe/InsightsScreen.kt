@@ -28,6 +28,8 @@ import com.example.kachingaapp_prog7313poe.viewmodel.InsightsViewModel
 import com.example.kachingaapp_prog7313poe.navigation.NavRoutes
 import com.example.prog7313_poe_kachinga.AnimatedScreen
 import com.example.prog7313_poe_kachinga.ui.theme.KachingaGreen
+import com.example.prog7313_poe_kachinga.ui.theme.KachingaGreenLight
+import com.example.prog7313_poe_kachinga.ui.theme.KachingaRed
 
 @Composable
 fun InsightsScreen(
@@ -96,3 +98,46 @@ fun InsightsScreen(
                 }
 
                 Column(modifier = Modifier.padding(16.dp)) {
+
+                    // Savings Goal Progress
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (state.onTrack) KachingaGreenLight
+                            else Color(0xFFFFF0F0)
+                        )
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    "Monthly Savings Goal",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (state.onTrack) KachingaGreen else KachingaRed
+                                )
+                                Text(
+                                    "${state.savingsGoalProgress}%",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (state.onTrack) KachingaGreen else KachingaRed
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            LinearProgressIndicator(
+                                progress = { state.savingsGoalProgress / 100f },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(8.dp)
+                                    .clip(RoundedCornerShape(4.dp)),
+                                color = if (state.onTrack) KachingaGreen else KachingaRed,
+                                trackColor = Color(0xFFE0E0E0)
+                            )
+                        }
+                    }
