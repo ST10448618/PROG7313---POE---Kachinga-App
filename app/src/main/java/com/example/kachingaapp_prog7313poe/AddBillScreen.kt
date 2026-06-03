@@ -224,3 +224,71 @@ fun AddBillScreen(
                     } else {
                         Spacer(modifier = Modifier.height(16.dp))
                     }
+
+                    // Icon picker
+                    FormLabel("Bill Icon")
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Color(0xFFF7F7F7))
+                            .clickable { showIconPicker = !showIconPicker }
+                            .padding(16.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(selectedIcon, fontSize = 24.sp)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                "Tap to change",
+                                fontSize = 14.sp,
+                                color = TextSecondary,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+
+                    if (showIconPicker) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp)
+                        ) {
+                            Text(
+                                "Choose icon:",
+                                fontSize = 12.sp,
+                                color = TextSecondary,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(Color(0xFFF7F7F7))
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                billIcons.forEach { icon ->
+                                    Box(
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .clip(CircleShape)
+                                            .background(
+                                                if (selectedIcon == icon) KachingaGreenLight
+                                                else Color.Transparent
+                                            )
+                                            .clickable {
+                                                selectedIcon = icon
+                                                showIconPicker = false
+                                            },
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(icon, fontSize = 18.sp)
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                    }
