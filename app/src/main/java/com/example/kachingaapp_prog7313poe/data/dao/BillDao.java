@@ -15,4 +15,13 @@ interface BillDao {
 
     @Update
     suspend fun updateBill(bill: Bill)
+
+    @Query("SELECT * FROM bills WHERE userId = :userId AND isActive = 1")
+    suspend fun getBillsForMonth(userId: Int): List<Bill>
+
+    @Query("UPDATE bills SET isActive = 0 WHERE id = :billId")
+    suspend fun deactivateBill(billId: Int)
+
+    @Query("SELECT COUNT(*) FROM bills WHERE userId = :userId AND isActive = 1")
+    suspend fun getBillCount(userId: Int): Int
 }
