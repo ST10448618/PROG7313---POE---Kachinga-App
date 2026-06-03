@@ -43,7 +43,8 @@ class InsightsViewModel(application: Application) : AndroidViewModel(application
     private val session = SessionManager(application)
 
     private val _insightState = MutableStateFlow(InsightState())
-    val insightState: StateFlow<com.example.prog7313_poe_kachinga.viewmodel.InsightState> = _insightState.asStateFlow()
+    val insightState: StateFlow<com.example.prog7313_poe_kachinga.viewmodel.InsightState> =
+        _insightState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -64,3 +65,83 @@ class InsightsViewModel(application: Application) : AndroidViewModel(application
             }
         }
     }
+
+    private fun generateInsights(userId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _insightState.update { it.copy(isLoading = true) }
+            try {
+                val now = Calendar.getInstance()
+                val currentMonth = now.get(Calendar.MONTH)
+                val currentYear = now.get(Calendar.YEAR)
+
+                val currentMonthStart = Calendar.getInstance().apply {
+                    set(currentYear, currentMonth, 1, 0, 0, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }.timeInMillis
+
+                val currentMonthEnd = Calendar.getInstance().apply {
+                    set(
+                        currentYear, currentMonth,
+                        getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59
+                    )
+                }.timeInMillis
+
+                val lastMonthStart = Calendar.getInstance().apply {
+                    if (currentMonth == 0) {
+                        set(currentYear - 1, 11, 1, 0, 0, 0)
+                    } else {
+                        set(currentYear, currentMonth - 1, 1, 0, 0, 0)
+                    }
+                    set(Calendar.MILLISECOND, 0)
+                }.timeInMillis
+
+                val lastMonthEnd = Calendar.getInstance().apply {
+                    if (currentMonth == 0) {
+                        set(
+                            currentYear - 1, 11,
+                            getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59
+                        )
+                    } else {
+                        set(
+                            currentYear, currentMonth - 1,
+                            getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59
+                        )
+                    }
+                }.timeInMillis
+
+                val currentMonthExpenses =
+                    transactionDao.getExpensesByDateRange(
+                        userId,
+                        currentMonthStart,
+                        currentMonthEnd
+                    ).first()
+                val lastMonthExpenses =
+                    transactionDao.getExpensesByDateRange(userId, lastMonthStart, lastMonthEnd)
+                        .first()
+                val currentMonthIncome =
+                    transactionDao.getIncomeByDateRange(userId, currentMonthStart, currentMonthEnd)
+                        .first()
+
+                val salary = session.monthlyIncome.first()
+                val savingsTarget = session.savingsTargetPct.first()
+
+                val categoryChanges =
+                    calculateCategoryChanges(currentMonthExpenses, lastMonthExpenses)
+
+                val insights =
+                    mutableListOf<com.example.prog7313_poe_kachinga.viewmodel.SpendingInsight>()
+
+                // Top spending increase
+                categoryChanges.maxByOrNull { it.percentChange }?.let { top ->
+                    if (top.percentChange > 0) {
+                        insights.add(
+                            SpendingInsight(
+                                title = "${top.category} Spending Up",
+                                description = "${top.category} spending increased by ${top.percentChange.toInt()}% this month.",
+                                icon = "📈",
+                                actionable = top.percentChange > 20
+                            )
+                        )
+                    }
+                }
+            }
