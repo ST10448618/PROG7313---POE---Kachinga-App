@@ -169,3 +169,67 @@ fun BillsScreen(
                             }
                         }
                     }
+
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        // Upcoming Bills
+                        Text(
+                            "Upcoming Bills",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = TextPrimary,
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        )
+
+                        if (upcomingBills.isEmpty()) {
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(16.dp),
+                                colors = CardDefaults.cardColors(containerColor = Color.White)
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(40.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text("🎉", fontSize = 40.sp)
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        "No upcoming bills",
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = TextPrimary
+                                    )
+                                    Text(
+                                        "Tap + to add a recurring payment",
+                                        fontSize = 12.sp,
+                                        color = TextSecondary
+                                    )
+                                }
+                            }
+                        } else {
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(16.dp),
+                                colors = CardDefaults.cardColors(containerColor = Color.White),
+                                elevation = CardDefaults.cardElevation(1.dp)
+                            ) {
+                                Column(modifier = Modifier.padding(12.dp)) {
+                                    upcomingBills.forEachIndexed { index, upcoming ->
+                                        BillRow(
+                                            upcoming = upcoming,
+                                            onDelete = { showDeleteDialog = upcoming.bill }
+                                        )
+                                        if (index < upcomingBills.lastIndex) {
+                                            HorizontalDivider(
+                                                color = Divider,
+                                                thickness = 0.5.dp,
+                                                modifier = Modifier.padding(vertical = 8.dp)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
