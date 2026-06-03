@@ -10,3 +10,27 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 
+
+data class CategorySpending(
+    val category: String,
+    val currentMonth: Double,
+    val lastMonth: Double,
+    val percentChange: Float,
+    val trend: String // "UP", "DOWN", "STABLE"
+)
+
+data class SpendingInsight(
+    val title: String,
+    val description: String,
+    val icon: String,
+    val actionable: Boolean = false,
+    val potentialSavings: Double = 0.0
+)
+
+data class InsightState(
+    val categoryChanges: List<CategorySpending> = emptyList(),
+    val insights: List<SpendingInsight> = emptyList(),
+    val savingsGoalProgress: Int = 0,
+    val onTrack: Boolean = true,
+    val isLoading: Boolean = false
+)
